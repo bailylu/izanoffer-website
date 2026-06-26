@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>布局 C · 双栏对话 · 留学 AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F0E8;
+    --bg-warm: #EDE7DA;
+    --bg-card: #FFFFFF;
+    --bg-soft: #FBF8F2;
+    --ink: #1C1B17;
+    --ink-soft: #5C584F;
+    --ink-dim: #9D978C;
+    --line: rgba(28, 27, 23, 0.08);
+    --line-strong: rgba(28, 27, 23, 0.18);
+    --accent: #B25438;
+    --accent-soft: rgba(178, 84, 56, 0.12);
+    --accent-strong: rgba(178, 84, 56, 0.25);
+    --green: #6B8E5A;
+    --shadow-sm: 0 1px 2px rgba(28,27,23,0.04);
+    --shadow-md: 0 8px 24px rgba(28,27,23,0.06);
+    --shadow-lg: 0 30px 60px -20px rgba(28,27,23,0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .serif { font-family: 'Noto Serif SC', serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* DEMO BANNER */
+  .demo-banner {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 500;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: var(--shadow-md);
+  }
+  .demo-banner a, .demo-banner button {
+    color: var(--bg);
+    opacity: 0.55;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+  }
+  .demo-banner a:hover, .demo-banner button:hover { opacity: 1; }
+  .demo-banner b { font-weight: 600; }
+
+  /* ============ LANDING ============ */
+  .landing {
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+  }
+  .landing.hidden {
+    opacity: 0;
+    transform: translateY(-30px);
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+  }
+
+  nav.landing-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px);
+    background: rgba(244, 240, 232, 0.85);
+    border-bottom: 1px solid transparent;
+  }
+  nav.landing-nav.scrolled { border-bottom-color: var(--line); }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .logo-mark {
+    width: 26px;
+    height: 26px;
+    background: var(--ink);
+    border-radius: 50%;
+    position: relative;
+  }
+  .logo-mark::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .nav-cta {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 9px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 32px 60px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    padding: 5px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+  }
+  .hero-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    font-size: clamp(48px, 7vw, 88px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    margin-bottom: 28px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 900;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: clamp(16px, 1.4vw, 20px);
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto 48px;
+    line-height: 1.9;
+  }
+  .hero-input-wrap {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: 20px;
+    padding: 22px 26px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    box-shadow: var(--shadow-lg);
+    transition: border-color 0.2s, box-shadow 0.3s, transform 0.2s;
+  }
+  .hero-input:hover { transform: translateY(-2px); }
+  .hero-input:focus {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lg), 0 0 0 5px var(--accent-soft);
+  }
+  .hero-input::placeholder { color: var(--ink-dim); }
+  .pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 720px;
+  }
+  .pill {
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    background: var(--bg-card);
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  /* ============ APP (SPLIT VIEW) ============ */
+  .app {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .app.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* App Top Bar */
+  .app-topbar {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .app-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .app-logo-mark {
+    width: 22px;
+    height: 22px;
+    background: var(--ink);
+    border-radius: 50%;
+    position: relative;
+  }
+  .app-logo-mark::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .session-title {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+  }
+  .topbar-right { display: flex; gap: 8px; align-items: center; }
+  .topbar-model {
+    font-size: 11px;
+    color: var(--ink-soft);
+    padding: 5px 11px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .topbar-back {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .topbar-back:hover { color: var(--ink); background: var(--bg-card); }
+
+  /* SPLIT VIEW */
+  .split {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+  .pane-left {
+    flex: 1;
+    background: var(--bg-warm);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .pane-right {
+    width: 520px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* ===== LEFT PANE - WEBSITE VIEWER ===== */
+  .viewer-bar {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .viewer-tabs { display: flex; gap: 6px; }
+  .viewer-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    opacity: 0.5;
+  }
+  .viewer-url {
+    flex: 1;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .viewer-url::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .viewer-open {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .viewer-open:hover { color: var(--ink); background: var(--bg-card); }
+
+  /* The "rendered" page content */
+  .viewer-body {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg-card);
+  }
+  .viewer-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 60px 80px;
+  }
+  .viewer-school-header {
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .viewer-school-crest {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2c3a5e, #4a5e8f);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .viewer-school-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .viewer-school-dept {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .viewer-trans {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 10px;
+    background: var(--bg-soft);
+    border-radius: 100px;
+  }
+  .viewer h1.page-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .viewer .page-sub {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 28px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .viewer p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .viewer h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 36px;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+  .viewer .req-list {
+    list-style: none;
+    margin: 12px 0 24px;
+  }
+  .viewer .req-list li {
+    padding: 10px 0 10px 28px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .viewer .req-list li::before {
+    content: "→";
+    position: absolute;
+    left: 4px;
+    color: var(--ink-dim);
+  }
+  .viewer .program-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .viewer .program-card-name {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .viewer .program-card-meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* HIGHLIGHT marker for cited content */
+  .hl {
+    background: linear-gradient(180deg, transparent 60%, var(--accent-soft) 60%);
+    padding: 2px 4px;
+    margin: -2px -4px;
+    border-radius: 3px;
+    transition: background 0.3s;
+    position: relative;
+    cursor: pointer;
+  }
+  .hl.flash {
+    background: linear-gradient(180deg, var(--accent-strong) 0%, var(--accent-soft) 100%);
+    animation: flashIn 0.6s ease;
+  }
+  @keyframes flashIn {
+    0% { background: var(--accent); color: white; padding: 4px 6px; }
+    100% { padding: 2px 4px; }
+  }
+  .hl::after {
+    content: attr(data-ref);
+    position: absolute;
+    top: -8px;
+    right: -16px;
+    font-size: 9px;
+    color: var(--accent);
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+
+  /* ===== LEFT PANE - CASE COMPARISON ===== */
+  .case-view {
+    padding: 32px 36px;
+    overflow-y: auto;
+  }
+  .case-header {
+    margin-bottom: 28px;
+  }
+  .case-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .case-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .case-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .case-you {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .case-you-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .case-you-meta {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .case-you-detail {
+    font-size: 12px;
+    opacity: 0.7;
+    line-height: 1.6;
+  }
+  .case-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .case-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+  .case-card-bg { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .case-card-meta { font-size: 11px; color: var(--ink-soft); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+  .case-card-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    align-self: center;
+    font-weight: 600;
+  }
+  .res-y { background: rgba(107, 142, 90, 0.15); color: var(--green); }
+  .res-n { background: rgba(178, 84, 56, 0.12); color: var(--accent); }
+  .res-w { background: var(--bg-soft); color: var(--ink-soft); }
+
+  /* ===== RIGHT PANE - CHAT ===== */
+  .chat-conv {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+  }
+  .chat-msgs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .msg {
+    display: flex;
+    gap: 12px;
+  }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-av {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .msg-av.ai { background: var(--accent); color: white; }
+  .msg-av.user { background: var(--bg-warm); color: var(--ink-soft); }
+  .msg-content { max-width: 380px; }
+  .msg-bub {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .msg.user .msg-bub {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 6px;
+  }
+  .skill-chip::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .cite {
+    display: inline-flex;
+    align-items: baseline;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0 5px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    margin: 0 2px;
+    cursor: pointer;
+    vertical-align: super;
+    line-height: 1.2;
+  }
+  .cite:hover { background: var(--accent); color: white; }
+
+  /* Source indicator on AI bubble */
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .source-tag::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* Composer */
+  .chat-composer {
+    padding: 16px 22px 22px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .composer-suggests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .composer-suggest {
+    font-size: 11px;
+    padding: 5px 10px;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .composer-suggest:hover { background: var(--bg-card); color: var(--ink); }
+  .composer-box {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: var(--shadow-sm);
+  }
+  .composer-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .composer-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .composer-box input::placeholder { color: var(--ink-dim); }
+  .composer-send {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .composer-meta {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Empty state for left pane */
+  .empty-pane {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--ink-dim);
+    text-align: center;
+    padding: 40px;
+  }
+  .empty-pane-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+  .empty-pane h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .empty-pane p { font-size: 13px; max-width: 320px; line-height: 1.7; }
+
+  /* ===== TOGGLE READER / ORIGINAL ===== */
+  .viewer-toggle-group {
+    display: flex;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 2px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .viewer-toggle-btn {
+    padding: 4px 12px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .viewer-toggle-btn.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* ===== ORIGINAL VIEW (stylized generic university page) ===== */
+  .orig-page {
+    font-family: 'Times New Roman', Georgia, 'Songti SC', serif;
+    color: #1a1a1a;
+    font-size: 14px;
+    background: white;
+    min-height: 100%;
+  }
+  .orig-header {
+    padding: 14px 32px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .orig-school-name {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+  .orig-topnav {
+    display: flex;
+    gap: 22px;
+    font-size: 12px;
+  }
+  .orig-topnav a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .orig-breadcrumb {
+    background: #f3f3f5;
+    padding: 8px 32px;
+    font-size: 11px;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .orig-body {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 30px;
+    padding: 28px 32px;
+    background: white;
+  }
+  .orig-main h1 {
+    font-size: 22px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    font-weight: 700;
+  }
+  .orig-main h2 {
+    font-size: 16px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .orig-main p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin-bottom: 13px;
+    color: #2a2a2a;
+  }
+  .orig-main ul {
+    margin: 8px 0 14px 22px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .orig-side {
+    background: #f3f3f5;
+    padding: 18px;
+    border-left: 3px solid;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    height: fit-content;
+  }
+  .orig-side h3 {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .orig-side ul {
+    list-style: none;
+    padding: 0;
+  }
+  .orig-side ul li {
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .orig-side ul li a {
+    text-decoration: none;
+  }
+  .orig-footer {
+    color: rgba(255,255,255,0.7);
+    padding: 14px 32px;
+    font-size: 10.5px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  /* Theme variants (different generic academic palettes per school) */
+  .orig-page.theme-polimi .orig-header { background: #002554; }
+  .orig-page.theme-polimi .orig-main h1 { color: #002554; border-bottom: 2px solid #002554; }
+  .orig-page.theme-polimi .orig-main h2 { color: #002554; }
+  .orig-page.theme-polimi .orig-side { border-left-color: #002554; }
+  .orig-page.theme-polimi .orig-side h3 { color: #002554; }
+  .orig-page.theme-polimi .orig-side ul li a { color: #003a78; }
+  .orig-page.theme-polimi .orig-footer { background: #001a3a; }
+
+  .orig-page.theme-cambridge .orig-header { background: #6e2030; }
+  .orig-page.theme-cambridge .orig-main h1 { color: #6e2030; border-bottom: 2px solid #6e2030; }
+  .orig-page.theme-cambridge .orig-main h2 { color: #6e2030; }
+  .orig-page.theme-cambridge .orig-side { border-left-color: #6e2030; }
+  .orig-page.theme-cambridge .orig-side h3 { color: #6e2030; }
+  .orig-page.theme-cambridge .orig-side ul li a { color: #6e2030; }
+  .orig-page.theme-cambridge .orig-footer { background: #4a161f; }
+
+  .orig-page.theme-usc .orig-header { background: #8a2828; }
+  .orig-page.theme-usc .orig-main h1 { color: #8a2828; border-bottom: 2px solid #8a2828; }
+  .orig-page.theme-usc .orig-main h2 { color: #8a2828; }
+  .orig-page.theme-usc .orig-side { border-left-color: #8a2828; }
+  .orig-page.theme-usc .orig-side h3 { color: #8a2828; }
+  .orig-page.theme-usc .orig-side ul li a { color: #8a2828; }
+  .orig-page.theme-usc .orig-footer { background: #5e1a1a; }
+
+  /* Lightly fade the "original" view to suggest it's "the raw site" */
+  .orig-fade-overlay {
+    position: relative;
+  }
+  .orig-fade-overlay::before {
+    content: "示意版 · 非真实抓取";
+    position: absolute;
+    top: 80px;
+    right: 24px;
+    z-index: 10;
+    background: rgba(255,255,255,0.9);
+    color: var(--ink-dim);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid var(--line);
+  }
+
+  @media (max-width: 1100px) {
+    .pane-right { width: 440px; }
+    .viewer-content { padding: 36px 40px 60px; }
+    .orig-body { grid-template-columns: 1fr; }
+    .orig-side { display: none; }
+  }
+  @media (max-width: 900px) {
+    .split { flex-direction: column; }
+    .pane-left, .pane-right { width: 100%; flex: 1; }
+    .pane-right { border-top: 1px solid var(--line); border-right: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <b>布局 C · 双栏对话</b>
+  <a href="布局A_侧边对话.html">A</a>
+  <a href="布局B_全屏对话.html">B</a>
+  <button onclick="reset()">↺ 重置</button>
+</div>
+
+<!-- ============ LANDING ============ -->
+<div class="landing" id="landing">
+  <nav class="landing-nav">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <span>留学 AI</span>
+    </div>
+    <button class="nav-cta">登录</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">内测中 · 限 500 人免费</div>
+
+    <h1 class="serif">
+      看得懂官网的<br>
+      <em>AI 留学顾问</em>
+    </h1>
+
+    <p class="hero-sub">
+      给你顶级顾问的建议，<br>
+      也帮你看懂任何学校官网。每个答案都有官网兜底。
+    </p>
+
+    <div class="hero-input-wrap">
+      <input
+        id="heroInput"
+        class="hero-input"
+        type="text"
+        placeholder="问任何关于留学的事——比如『米兰理工有多少专业』"
+        autocomplete="off">
+    </div>
+
+    <div class="pills">
+      <div class="pill" onclick="ask('米兰理工有多少个硕士专业', 'polimi-programs')">米兰理工有多少专业</div>
+      <div class="pill" onclick="ask('剑桥 MPhil ACS 录取要求是什么', 'cam-mphil')">剑桥 MPhil ACS 录取要求</div>
+      <div class="pill" onclick="ask('USC MSCS 雅思要多少分', 'usc-mscs')">USC MSCS 雅思要多少</div>
+      <div class="pill" onclick="ask('我 GPA 3.4 双非能申到吗', 'case-compare')">我 GPA 3.4 双非能申到吗</div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ APP (SPLIT VIEW) ============ -->
+<div class="app" id="app">
+  <div class="app-topbar">
+    <div class="topbar-left">
+      <div class="app-logo">
+        <div class="app-logo-mark"></div>
+        <span>留学 AI</span>
+      </div>
+      <div class="session-title" id="sessionTitle">新会话</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-model">Claude Sonnet ▾</div>
+      <button class="topbar-back" onclick="reset()">← 回首页</button>
+    </div>
+  </div>
+
+  <div class="split">
+    <!-- LEFT PANE -->
+    <div class="pane-left" id="paneLeft">
+      <!-- dynamic content -->
+    </div>
+
+    <!-- RIGHT PANE -->
+    <div class="pane-right">
+      <div class="chat-conv" id="convScroll">
+        <div class="chat-msgs" id="chatMsgs"></div>
+      </div>
+
+      <div class="chat-composer">
+        <div class="composer-suggests" id="suggests"></div>
+        <div class="composer-box">
+          <input id="appInput" type="text" placeholder="继续追问..." autocomplete="off">
+          <button class="composer-send" onclick="sendApp()">↑</button>
+        </div>
+        <div class="composer-meta">每个答案附官网出处 · 准确性是基线</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============ STATE ============
+  let currentScenario = null;
+  let currentMode = 'reader'; // 'reader' | 'original'
+
+  function setMode(mode) {
+    if (mode === currentMode) return;
+    currentMode = mode;
+    // re-render current school view
+    if (currentScenario === 'polimi-programs') renderPolimi();
+    else if (currentScenario === 'cam-mphil') renderCambridge();
+    else if (currentScenario === 'usc-mscs') renderUSC();
+  }
+
+  const heroInput = document.getElementById('heroInput');
+  heroInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && heroInput.value.trim()) {
+      // Default route to school query
+      const v = heroInput.value.trim();
+      if (v.includes('米兰')) ask(v, 'polimi-programs');
+      else if (v.includes('剑桥') || v.includes('Cambridge')) ask(v, 'cam-mphil');
+      else if (v.includes('USC')) ask(v, 'usc-mscs');
+      else if (v.includes('能申') || v.includes('GPA')) ask(v, 'case-compare');
+      else ask(v, 'polimi-programs');
+    }
+  });
+
+  function ask(question, scenario) {
+    const landing = document.getElementById('landing');
+    const app = document.getElementById('app');
+    landing.classList.add('hidden');
+    setTimeout(() => {
+      app.classList.add('active');
+      runScenario(question, scenario);
+    }, 280);
+  }
+
+  function reset() {
+    const landing = document.getElementById('landing');
+    const app = document.getElementById('app');
+    app.classList.remove('active');
+    setTimeout(() => {
+      landing.classList.remove('hidden');
+      heroInput.value = '';
+      window.scrollTo({ top: 0 });
+      document.getElementById('chatMsgs').innerHTML = '';
+      document.getElementById('paneLeft').innerHTML = '';
+    }, 300);
+  }
+
+  // ============ SCENARIOS ============
+  function runScenario(question, key) {
+    document.getElementById('chatMsgs').innerHTML = '';
+    addUserMsg(question);
+    document.getElementById('sessionTitle').textContent = question;
+    currentScenario = key;
+    currentMode = 'reader'; // 默认进入 reader 模式
+
+    if (key === 'polimi-programs') {
+      renderPolimi();
+      setTimeout(() => addAiPolimi(), 700);
+      setTimeout(() => setSuggests([
+        ['你说的工程类共几个', 'polimi-more'],
+        ['ACS 那个项目难申吗', 'cam-mphil'],
+        ['推荐我冲哪个', 'case-compare'],
+      ]), 1800);
+    } else if (key === 'cam-mphil') {
+      renderCambridge();
+      setTimeout(() => addAiCambridge(), 700);
+      setTimeout(() => setSuggests([
+        ['雅思要多少', 'cam-ielts'],
+        ['我能申到吗', 'case-compare'],
+        ['切回米兰理工', 'polimi-programs'],
+      ]), 1800);
+    } else if (key === 'usc-mscs') {
+      renderUSC();
+      setTimeout(() => addAiUSC(), 700);
+      setTimeout(() => setSuggests([
+        ['我托福 100 行吗', 'case-compare'],
+        ['看下完整录取要求', 'usc-mscs'],
+      ]), 1800);
+    } else if (key === 'case-compare') {
+      renderCase();
+      setTimeout(() => addAiCase(), 700);
+      setTimeout(() => setSuggests([
+        ['想冲 CMU 该补什么', 'cam-mphil'],
+        ['看下 USC 官网要求', 'usc-mscs'],
+      ]), 1800);
+    } else if (key === 'polimi-more') {
+      // Stay on polimi, add more detail
+      addUserMsg('你说的工程类共几个');
+      setTimeout(() => {
+        addAiMsg(`
+          <div class="skill-chip">官网解读 · Politecnico di Milano</div>
+          工程类硕士项目共 <b>20 个</b><span class="cite" onclick="flashHl('P3')">P3</span>，覆盖机械、电气、计算机、土木等。
+          其中<b>英语授课</b>的有 16 个<span class="cite" onclick="flashHl('P3')">P3</span>，对国际学生（包括中国学生）最友好。
+          <div class="source-tag">来源 polimi.it/programs · 抓取于今日</div>
+        `);
+      }, 700);
+    } else if (key === 'cam-ielts') {
+      addUserMsg('雅思要多少');
+      setTimeout(() => {
+        addAiMsg(`
+          <div class="skill-chip">官网解读 · Cambridge MPhil ACS</div>
+          雅思要求 <b>7.5</b>（写作和口语单项不低于 7.0）<span class="cite" onclick="flashHl('C2')">C2</span>。
+          <br><br>
+          中国学生很多卡在写作 7.0 这一项。建议你提早 6 个月开始，至少考 2 次。
+          <div class="source-tag">来源 cst.cam.ac.uk · 抓取于今日</div>
+        `);
+      }, 700);
+    }
+  }
+
+  // ============ LEFT PANE - SCHOOL WEBSITE MOCKUPS ============
+  // 注意：以下是产品演示用的"示意版"官网视图，
+  // 并非实际复制任何学校官网的设计、视觉或具体文字
+
+  function renderPolimi() {
+    const m = currentMode;
+    const bar = `
+      <div class="viewer-bar">
+        <div class="viewer-tabs">
+          <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
+        </div>
+        <div class="viewer-url">polimi.it / programmes / master</div>
+        <div class="viewer-toggle-group">
+          <button class="viewer-toggle-btn ${m==='reader'?'active':''}" onclick="setMode('reader')">Reader</button>
+          <button class="viewer-toggle-btn ${m==='original'?'active':''}" onclick="setMode('original')">原版</button>
+        </div>
+        <button class="viewer-open">↗ 原网页</button>
+      </div>
+    `;
+
+    const original = `
+      <div class="viewer-body orig-fade-overlay">
+        <div class="orig-page theme-polimi">
+          <header class="orig-header">
+            <div class="orig-school-name">POLITECNICO DI MILANO</div>
+            <nav class="orig-topnav">
+              <a>Study</a><a>Research</a><a>International</a><a>Industry</a><a>About</a>
+            </nav>
+          </header>
+          <div class="orig-breadcrumb">Home › Study › Programmes › Master of Science</div>
+          <div class="orig-body">
+            <main class="orig-main">
+              <h1>Master of Science Programmes</h1>
+              <p>The Master of Science (Laurea Magistrale) is a second-cycle degree programme lasting 2 years and equivalent to 120 ECTS credits. The University offers a portfolio of 49 Master of Science programmes across three Schools.</p>
+              <h2>School of Engineering</h2>
+              <p>The School of Engineering offers 20 Master of Science programmes covering mechanical, electrical, energy, civil, computer and management engineering, among other disciplines. 16 of these programmes are delivered entirely in English.</p>
+              <h2>School of Architecture, Urban Planning, Construction Engineering</h2>
+              <p>11 Master of Science programmes are offered through this School, including programmes in Architectural Design, Building Engineering, and Urban Planning.</p>
+              <h2>School of Design</h2>
+              <p>18 Master of Science programmes are available, encompassing product design, communication design, fashion design, interior design, and integrated product design.</p>
+              <h2>Information for International Applicants</h2>
+              <p>33 of the Master of Science programmes are taught entirely in English and open to non-EU applicants. The standard application window runs from November to March of the following academic year. Candidates must hold a Bachelor's degree (or equivalent) of at least 3 years of full-time study.</p>
+            </main>
+            <aside class="orig-side">
+              <h3>Related Links</h3>
+              <ul>
+                <li><a>Admissions</a></li>
+                <li><a>Tuition & Fees</a></li>
+                <li><a>Scholarships</a></li>
+                <li><a>Language Requirements</a></li>
+                <li><a>Application Deadlines</a></li>
+                <li><a>Programme Catalogue</a></li>
+                <li><a>Contact Admissions Office</a></li>
+              </ul>
+            </aside>
+          </div>
+          <footer class="orig-footer">© Politecnico di Milano · Piazza Leonardo da Vinci 32</footer>
+        </div>
+      </div>
+    `;
+
+    const reader = `
+      <div class="viewer-body viewer">
+        <div class="viewer-content">
+          <div class="viewer-school-header">
+            <div class="viewer-school-crest">PM</div>
+            <div>
+              <div class="viewer-school-name">Politecnico di Milano</div>
+              <div class="viewer-school-dept">Programmes / Master of Science</div>
+            </div>
+            <div class="viewer-trans">已翻译 中文</div>
+          </div>
+
+          <h1 class="page-title">Laurea Magistrale 硕士项目总览</h1>
+          <p class="page-sub">学制 2 年 · 120 ECTS · 部分项目英语授课</p>
+
+          <p>米兰理工是意大利最大的科技与设计类公立大学。<span class="hl" data-ref="P1">硕士阶段开设 <b>49 个</b> Laurea Magistrale 项目</span>，覆盖工程、建筑、设计三大学院。</p>
+
+          <h2>三大学院构成</h2>
+          <ul class="req-list">
+            <li><b>工程学院</b> ——<span class="hl" data-ref="P3"> 共 20 个硕士项目，其中 16 个英语授课</span></li>
+            <li><b>建筑学院</b> —— 共 11 个硕士项目（部分英语授课）</li>
+            <li><b>设计学院</b> —— 共 18 个硕士项目</li>
+          </ul>
+
+          <h2>面向国际学生的项目</h2>
+          <p><span class="hl" data-ref="P2">其中 <b>33 个项目以全英语授课</b></span>，向欧盟外学生开放。常规申请窗口为每年 11 月至次年 3 月。</p>
+
+          <div class="program-card">
+            <div class="program-card-name">Computer Science and Engineering</div>
+            <div class="program-card-meta">EN · Engineering · 2 years</div>
+          </div>
+          <div class="program-card">
+            <div class="program-card-name">Management Engineering</div>
+            <div class="program-card-meta">EN · Engineering · 2 years</div>
+          </div>
+          <div class="program-card">
+            <div class="program-card-name">Design for the Fashion System</div>
+            <div class="program-card-meta">EN · Design · 2 years</div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('paneLeft').innerHTML = bar + (m === 'reader' ? reader : original);
+  }
+
+  function renderCambridge() {
+    const m = currentMode;
+    const bar = `
+      <div class="viewer-bar">
+        <div class="viewer-tabs">
+          <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
+        </div>
+        <div class="viewer-url">cst.cam.ac.uk / admissions / mphil-acs</div>
+        <div class="viewer-toggle-group">
+          <button class="viewer-toggle-btn ${m==='reader'?'active':''}" onclick="setMode('reader')">Reader</button>
+          <button class="viewer-toggle-btn ${m==='original'?'active':''}" onclick="setMode('original')">原版</button>
+        </div>
+        <button class="viewer-open">↗ 原网页</button>
+      </div>
+    `;
+    const original = `
+      <div class="viewer-body orig-fade-overlay">
+        <div class="orig-page theme-cambridge">
+          <header class="orig-header">
+            <div class="orig-school-name">UNIVERSITY OF CAMBRIDGE</div>
+            <nav class="orig-topnav">
+              <a>Study</a><a>Research</a><a>Admissions</a><a>Departments</a><a>About</a>
+            </nav>
+          </header>
+          <div class="orig-breadcrumb">Home › Department of Computer Science and Technology › Postgraduate › MPhil in ACS</div>
+          <div class="orig-body">
+            <main class="orig-main">
+              <h1>MPhil in Advanced Computer Science — Entry Requirements</h1>
+              <p>The MPhil in Advanced Computer Science is an 11-month full-time taught research degree leading to either further study at PhD level or careers in industry. Applicants should hold an undergraduate degree in Computer Science or a closely related discipline.</p>
+              <h2>Academic Qualifications</h2>
+              <p>Applicants are normally expected to hold a First-class Honours degree (or equivalent international qualification) in Computer Science or a closely related subject. International applicants are advised to consult the Postgraduate Admissions Office for country-specific equivalencies.</p>
+              <h2>Language Requirements</h2>
+              <p>All applicants whose first language is not English must satisfy the University's English language requirements before admission. The standard IELTS requirement is an overall score of 7.5, with not less than 7.0 in each individual element.</p>
+              <p>Alternative qualifications including TOEFL iBT (110 overall, no element below 25) are accepted. The CAE and CPE may also be considered.</p>
+              <h2>Supporting Documents</h2>
+              <ul>
+                <li>Two academic references from current or recent tutors</li>
+                <li>Official transcripts from all previous higher-education institutions</li>
+                <li>A research proposal of 500–1,000 words</li>
+                <li>A personal statement of motivation</li>
+                <li>Curriculum vitae</li>
+              </ul>
+              <h2>Application Deadlines</h2>
+              <p>The application portal opens in early September. International applicants are advised to apply by 1 December to be considered for funding. Final deadline for self-funded applicants is in late March.</p>
+            </main>
+            <aside class="orig-side">
+              <h3>In This Section</h3>
+              <ul>
+                <li><a>How to Apply</a></li>
+                <li><a>Fees & Funding</a></li>
+                <li><a>Scholarships</a></li>
+                <li><a>English Requirements</a></li>
+                <li><a>FAQs</a></li>
+                <li><a>Contact</a></li>
+              </ul>
+            </aside>
+          </div>
+          <footer class="orig-footer">© 2026 The Chancellor, Masters, and Scholars of the University of Cambridge</footer>
+        </div>
+      </div>
+    `;
+    const reader = `
+      <div class="viewer-body viewer">
+        <div class="viewer-content">
+          <div class="viewer-school-header">
+            <div class="viewer-school-crest" style="background: linear-gradient(135deg, #6e2030, #993a4f);">CB</div>
+            <div>
+              <div class="viewer-school-name">University of Cambridge</div>
+              <div class="viewer-school-dept">Computer Science · MPhil in Advanced Computer Science</div>
+            </div>
+            <div class="viewer-trans">已翻译 中文</div>
+          </div>
+
+          <h1 class="page-title">MPhil in Advanced Computer Science 录取要求</h1>
+          <p class="page-sub">学制 11 个月 · 授课 + 研究 · 每年 9 月入学</p>
+
+          <h2>学术背景</h2>
+          <p><span class="hl" data-ref="C1">本科计算机或相关专业，需达到<b>英国一等学位（First-class Honours）</b>或同等水平</span>。对国际申请者，中国 211/985 院校通常要求 <b>GPA 90/100</b>，其他院校要求 92+。</p>
+
+          <h2>语言要求</h2>
+          <ul class="req-list">
+            <li><span class="hl" data-ref="C2">IELTS 总分 <b>7.5</b>，写作与口语单项不低于 7.0</span></li>
+            <li>TOEFL iBT 总分 110，单项不低于 25</li>
+          </ul>
+
+          <h2>申请材料</h2>
+          <ul class="req-list">
+            <li><span class="hl" data-ref="C3"><b>2 封学术推荐信</b>（来自本科教授）</span></li>
+            <li>本科成绩单（中英文公证）</li>
+            <li>研究计划（Research Proposal）500-1000 字</li>
+            <li>个人陈述（Personal Statement）</li>
+          </ul>
+
+          <h2>申请时间表</h2>
+          <p>申请通道每年 <b>9 月初开放</b>，国际学生建议在 <b>12 月 1 日</b>前提交以争取奖学金考虑。</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('paneLeft').innerHTML = bar + (m === 'reader' ? reader : original);
+  }
+
+  function renderUSC() {
+    const m = currentMode;
+    const bar = `
+      <div class="viewer-bar">
+        <div class="viewer-tabs">
+          <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
+        </div>
+        <div class="viewer-url">cs.usc.edu / academics / masters / mscs</div>
+        <div class="viewer-toggle-group">
+          <button class="viewer-toggle-btn ${m==='reader'?'active':''}" onclick="setMode('reader')">Reader</button>
+          <button class="viewer-toggle-btn ${m==='original'?'active':''}" onclick="setMode('original')">原版</button>
+        </div>
+        <button class="viewer-open">↗ 原网页</button>
+      </div>
+    `;
+    const original = `
+      <div class="viewer-body orig-fade-overlay">
+        <div class="orig-page theme-usc">
+          <header class="orig-header">
+            <div class="orig-school-name">USC VITERBI SCHOOL OF ENGINEERING</div>
+            <nav class="orig-topnav">
+              <a>Academics</a><a>Admissions</a><a>Research</a><a>Faculty</a><a>About</a>
+            </nav>
+          </header>
+          <div class="orig-breadcrumb">Home › Academics › Master's Programs › MS Computer Science</div>
+          <div class="orig-body">
+            <main class="orig-main">
+              <h1>Master of Science in Computer Science</h1>
+              <p>The Master of Science in Computer Science is a graduate-level program designed to prepare students for advanced careers in the computing industry or for further study at the doctoral level. The program typically requires 32 units of coursework and can be completed in three to four semesters of full-time study.</p>
+              <h2>Admission Requirements</h2>
+              <p>A bachelor's degree from a recognized institution is required for admission. A grade point average (GPA) of at least 3.0 on a 4.0 scale is the minimum standard; competitive applicants typically present GPAs well above this minimum.</p>
+              <p>The undergraduate background should include preparation in computer science fundamentals, including programming, data structures, algorithms, computer architecture, and operating systems. Applicants from non-CS backgrounds may be considered if equivalent coursework can be demonstrated.</p>
+              <h2>English Proficiency</h2>
+              <p>International applicants whose native language is not English are required to submit either a TOEFL or IELTS score. The minimum required TOEFL iBT score is 90 with not less than 20 in Speaking. The minimum IELTS score is 6.5 overall with no band below 6.0. Higher scores may strengthen an application.</p>
+              <h2>Standardized Tests</h2>
+              <p>As of the 2022 application cycle, the GRE is optional. Applicants who choose to submit GRE scores will have them considered as part of a holistic review. Applications without GRE scores will not be disadvantaged.</p>
+            </main>
+            <aside class="orig-side">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a>Apply Now</a></li>
+                <li><a>Tuition & Fees</a></li>
+                <li><a>Financial Aid</a></li>
+                <li><a>Course Catalog</a></li>
+                <li><a>FAQ</a></li>
+                <li><a>Contact</a></li>
+              </ul>
+            </aside>
+          </div>
+          <footer class="orig-footer">© University of Southern California · Viterbi School of Engineering</footer>
+        </div>
+      </div>
+    `;
+    const reader = `
+      <div class="viewer-body viewer">
+        <div class="viewer-content">
+          <div class="viewer-school-header">
+            <div class="viewer-school-crest" style="background: linear-gradient(135deg, #8a2828, #c43a3a);">SC</div>
+            <div>
+              <div class="viewer-school-name">University of Southern California</div>
+              <div class="viewer-school-dept">Viterbi School of Engineering · MS Computer Science</div>
+            </div>
+            <div class="viewer-trans">已翻译 中文</div>
+          </div>
+
+          <h1 class="page-title">MS in Computer Science 申请要求</h1>
+          <p class="page-sub">学制 1.5-2 年 · Spring/Fall 双入学 · 总学费约 $65K/year</p>
+
+          <h2>语言要求</h2>
+          <ul class="req-list">
+            <li><span class="hl" data-ref="U1">托福总分 <b>90</b>（建议 100+），单项口语不低于 20</span></li>
+            <li><span class="hl" data-ref="U2">雅思总分 <b>6.5</b>（建议 7.0+），单项不低于 6.0</span></li>
+            <li>本科为英语授课国家 4 年以上可豁免</li>
+          </ul>
+
+          <h2>学术要求</h2>
+          <p><span class="hl" data-ref="U3">GPA 最低 <b>3.0/4.0</b>，但近年录取者 GPA 中位数为 <b>3.55</b></span>。建议本科 CS 相关专业，或修过编程、数据结构、算法、操作系统等核心课。</p>
+
+          <h2>GRE</h2>
+          <p>2022 年起 <b>GRE 选交</b>，不交不扣分。但建议有 320+ 的 GRE 仍可作为加分项。</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('paneLeft').innerHTML = bar + (m === 'reader' ? reader : original);
+  }
+
+  function renderCase() {
+    const html = `
+      <div class="case-view">
+        <div class="case-header">
+          <div class="case-eyebrow">案例对照</div>
+          <div class="case-title serif">你 <em style="color: var(--accent); font-style: italic;">vs</em> 历史录取者</div>
+          <div class="case-sub">基于你 GPA 3.4 / 双非 / CS 背景，从案例库匹配最相似的 5 人</div>
+        </div>
+
+        <div class="case-you">
+          <div class="case-you-label">YOU</div>
+          <div class="case-you-meta">GPA 3.4 · 双非 CS</div>
+          <div class="case-you-detail">托福 100 · 无 GRE · 1 段实习 · 无论文 · 2027 Fall 申请</div>
+        </div>
+
+        <div class="case-cards">
+          <div class="case-card">
+            <div>
+              <div class="case-card-bg">CMU MSCS · 双非 CS</div>
+              <div class="case-card-meta">GPA 3.5 · GRE 328 · 顶会一作 · 2 段实习</div>
+            </div>
+            <div class="case-card-result res-y">✓ 录取</div>
+          </div>
+          <div class="case-card">
+            <div>
+              <div class="case-card-bg">CMU MSCS · 双非 CS</div>
+              <div class="case-card-meta">GPA 3.4 · 无 GRE · 1 段实习 · 无论文</div>
+            </div>
+            <div class="case-card-result res-n">✗ 拒</div>
+          </div>
+          <div class="case-card">
+            <div>
+              <div class="case-card-bg">USC MSCS · 双非 CS</div>
+              <div class="case-card-meta">GPA 3.4 · 托福 100 · 1 段实习</div>
+            </div>
+            <div class="case-card-result res-y">✓ 录取</div>
+          </div>
+          <div class="case-card">
+            <div>
+              <div class="case-card-bg">NEU Align MSCS · 双非</div>
+              <div class="case-card-meta">GPA 3.3 · 无 GRE · 0 段实习</div>
+            </div>
+            <div class="case-card-result res-y">✓ 录取</div>
+          </div>
+          <div class="case-card">
+            <div>
+              <div class="case-card-bg">Stevens MSCS · 双非 CS</div>
+              <div class="case-card-meta">GPA 3.3 · 托福 88 · 0 段实习</div>
+            </div>
+            <div class="case-card-result res-y">✓ 录取</div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('paneLeft').innerHTML = html;
+  }
+
+  // ============ AI MESSAGES ============
+  function addUserMsg(text) {
+    const msgs = document.getElementById('chatMsgs');
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `<div class="msg-av user">我</div><div class="msg-content"><div class="msg-bub">${escapeHtml(text)}</div></div>`;
+    msgs.appendChild(div);
+    scrollChat();
+  }
+
+  function addAiMsg(html) {
+    const msgs = document.getElementById('chatMsgs');
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = `<div class="msg-av ai">留</div><div class="msg-content"><div class="msg-bub">${html}</div></div>`;
+    msgs.appendChild(div);
+    scrollChat();
+  }
+
+  function addAiPolimi() {
+    addAiMsg(`
+      <div class="skill-chip">官网解读 · Politecnico di Milano</div>
+      米兰理工硕士项目共 <b>49 个</b><span class="cite" onclick="flashHl('P1')">P1</span>，分布在工程、建筑、设计三大学院。
+      其中 <b>33 个英语授课</b><span class="cite" onclick="flashHl('P2')">P2</span>，对中国学生最友好。
+      <br><br>
+      点右上角引用编号或左边高亮，可直接核对原文。
+      <div class="source-tag">来源 polimi.it/programmes · 抓取于今日</div>
+    `);
+  }
+
+  function addAiCambridge() {
+    addAiMsg(`
+      <div class="skill-chip">官网解读 · Cambridge MPhil ACS</div>
+      剑桥 MPhil ACS 的硬要求：
+      <br>• 学术：<b>英国一等学位 / 中国 211/985 GPA 90+</b><span class="cite" onclick="flashHl('C1')">C1</span>
+      <br>• 语言：<b>雅思 7.5（写作口语单项 7.0）</b><span class="cite" onclick="flashHl('C2')">C2</span>
+      <br>• 推荐信：<b>2 封学术推荐</b><span class="cite" onclick="flashHl('C3')">C3</span>
+      <br><br>
+      <b>对你而言</b>：GPA 90 这一条是硬卡线，剑桥几乎不破例。
+      <div class="source-tag">来源 cst.cam.ac.uk · 抓取于今日</div>
+    `);
+  }
+
+  function addAiUSC() {
+    addAiMsg(`
+      <div class="skill-chip">官网解读 · USC MSCS</div>
+      USC MSCS 的语言要求：
+      <br>• 托福 <b>90</b>（建议 100+）<span class="cite" onclick="flashHl('U1')">U1</span>
+      <br>• 雅思 <b>6.5</b>（建议 7.0+）<span class="cite" onclick="flashHl('U2')">U2</span>
+      <br><br>
+      但<b>更需要注意</b>：USC 近年录取者 GPA 中位数 <b>3.55</b><span class="cite" onclick="flashHl('U3')">U3</span>，硬卡线 3.0 是写给招生委员看的，实际门槛远高于此。
+      <div class="source-tag">来源 cs.usc.edu · 抓取于今日</div>
+    `);
+  }
+
+  function addAiCase() {
+    addAiMsg(`
+      <div class="skill-chip">案例对照 · 录取概率估算</div>
+      从案例库匹配了 5 位最像你的过去申请者（左边），结论：
+      <br><br>
+      • <b>CMU</b> 你和 2024 拒录的一位几乎一模一样——他没顶会、没 GRE。<b>不建议作为主申</b>。
+      <br>• <b>USC</b> 同背景同 GPA 的人录了——<b>建议主申</b>。
+      <br>• <b>NEU / Stevens</b> 比你弱的都录了——<b>是稳的保底</b>。
+      <br><br>
+      想冲 CMU 的话，今年还能做的是 GRE 328+ 一作论文。要不要我帮你排时间线？
+    `);
+  }
+
+  // ============ CITATION HIGHLIGHT ============
+  function flashHl(ref) {
+    const els = document.querySelectorAll(`[data-ref="${ref}"]`);
+    els.forEach(el => {
+      el.classList.add('flash');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => el.classList.remove('flash'), 1200);
+    });
+  }
+
+  // ============ SUGGESTIONS ============
+  function setSuggests(arr) {
+    const wrap = document.getElementById('suggests');
+    wrap.innerHTML = '';
+    arr.forEach(([txt, key]) => {
+      const div = document.createElement('div');
+      div.className = 'composer-suggest';
+      div.textContent = txt;
+      div.onclick = () => {
+        wrap.innerHTML = '';
+        runScenario(txt, key);
+      };
+      wrap.appendChild(div);
+    });
+  }
+
+  // ============ COMPOSER ============
+  function sendApp() {
+    const input = document.getElementById('appInput');
+    if (!input.value.trim()) return;
+    addUserMsg(input.value);
+    input.value = '';
+    setTimeout(() => {
+      addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式 · 真实版本会根据问题自动判断要不要查官网、查哪个、怎么解读）</i>');
+    }, 500);
+  }
+  document.getElementById('appInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendApp();
+  });
+
+  // ============ UTILS ============
+  function scrollChat() {
+    const conv = document.getElementById('convScroll');
+    conv.scrollTop = conv.scrollHeight;
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
+</script>
+
+</body>
+</html>
