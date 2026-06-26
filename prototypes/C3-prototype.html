@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>布局 C3 · 纯原文 + AI 全包 · izanoffer</title>
+<title>IZANOFFER · AI 留学顾问</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=Source+Serif+4:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -72,6 +72,54 @@
     cursor: pointer;
     font-family: inherit;
     font-size: 11px;
+  }
+  .hero-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 auto 18px;
+  }
+  .auth-button {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    color: var(--ink);
+    border-radius: 100px;
+    padding: 7px 13px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: var(--shadow-sm);
+  }
+  .auth-button:hover { border-color: var(--line-strong); }
+  .auth-button.muted {
+    color: var(--ink-dim);
+    cursor: default;
+  }
+  .auth-user {
+    min-width: 32px;
+    min-height: 32px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .auth-user.active { display: flex; }
+  .auth-status {
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 6px 10px;
+    display: none;
+  }
+  .auth-status.active { display: inline-flex; }
+  .auth-note {
+    width: 100%;
+    color: var(--ink-dim);
+    font-size: 12px;
+    text-align: center;
   }
 
   /* ============ LANDING ============ */
@@ -174,6 +222,23 @@
     flex-wrap: wrap;
     justify-content: center;
     max-width: 720px;
+    margin: 0 auto;
+  }
+  .quick-start {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    max-width: 820px;
+  }
+  .quick-group {
+    display: grid;
+    gap: 8px;
+  }
+  .quick-title {
+    font-size: 12px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    text-align: center;
   }
   .pill {
     padding: 8px 14px;
@@ -184,6 +249,11 @@
     color: var(--ink-soft);
     cursor: pointer;
     transition: all 0.2s;
+  }
+  .pill.link {
+    color: var(--accent);
+    border-color: var(--accent-soft);
+    background: rgba(255,255,255,0.55);
   }
   .pill:hover {
     background: var(--bg-card);
@@ -253,6 +323,281 @@
     max-width: 400px;
   }
   .topbar-right { display: flex; gap: 8px; align-items: center; }
+  .topbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 4px;
+  }
+  .profile-guide {
+    position: fixed;
+    inset: 0;
+    z-index: 360;
+    background: rgba(28, 27, 23, 0.18);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+  }
+  .profile-guide.active { display: flex; }
+  .user-center {
+    position: fixed;
+    inset: 0;
+    z-index: 370;
+    background: rgba(28, 27, 23, 0.18);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+  }
+  .user-center.active { display: flex; }
+  .user-panel {
+    width: min(620px, 100%);
+    max-height: min(720px, 92vh);
+    overflow-y: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 22px;
+  }
+  .user-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+  .user-head h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .user-head p {
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .user-close {
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    padding: 7px 12px;
+    font: inherit;
+    cursor: pointer;
+  }
+  .user-section {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .user-section-title {
+    font-size: 12px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .user-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .user-profile-item {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    min-height: 62px;
+  }
+  .user-profile-item b {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-bottom: 4px;
+  }
+  .user-profile-item span {
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .user-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .user-actions button {
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 9px 14px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    font: inherit;
+    cursor: pointer;
+  }
+  .user-actions button.primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .mock-auth-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .mock-auth-form input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    outline: none;
+  }
+  .mock-auth-error {
+    color: var(--accent);
+    font-size: 12px;
+    min-height: 18px;
+  }
+  .profile-panel {
+    width: min(680px, 100%);
+    height: min(760px, 92vh);
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .profile-chat-head {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .profile-chat-title {
+    display: grid;
+    gap: 3px;
+  }
+  .profile-chat-title b {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+  }
+  .profile-chat-title span {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .profile-skip {
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    border-radius: 100px;
+    padding: 7px 12px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .profile-chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: linear-gradient(180deg, var(--bg-card), var(--bg-soft));
+  }
+  .profile-chat-msg {
+    display: flex;
+    gap: 10px;
+    max-width: 92%;
+  }
+  .profile-chat-msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+  .profile-chat-av {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .profile-chat-msg.user .profile-chat-av {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .profile-chat-bubble {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 11px 13px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .profile-chat-msg.user .profile-chat-bubble {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .profile-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .profile-quick button {
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    padding: 5px 9px;
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .profile-chat-input {
+    border-top: 1px solid var(--line);
+    padding: 14px;
+    background: var(--bg-card);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .profile-chat-input input {
+    flex: 1;
+    border: 1px solid var(--line-strong);
+    background: var(--bg-soft);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font: inherit;
+    outline: none;
+  }
+  .profile-chat-input button {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 11px 13px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    font: inherit;
+    cursor: pointer;
+  }
+  .profile-chat-input button.primary {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
   .topbar-model {
     font-size: 11px;
     color: var(--ink-soft);
@@ -289,7 +634,7 @@
     min-width: 0;
   }
   .pane-right {
-    width: 480px;
+    width: clamp(420px, 28vw, 520px);
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -326,6 +671,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+  .viewer-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 100px;
+    background: rgba(107, 142, 90, 0.1);
+    color: var(--green);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .viewer-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
   }
   .viewer-url::before {
     content: "";
@@ -374,9 +737,36 @@
     position: relative;
   }
   .viewer-content {
-    max-width: 720px;
+    width: min(100%, 1180px);
     margin: 0 auto;
-    padding: 40px 56px 80px;
+    padding: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 88px) 80px;
+  }
+  .source-note {
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 26px;
+    display: grid;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .source-note b {
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .source-note-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .source-note-row span {
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 3px 8px;
+    background: var(--bg-card);
+    font-size: 11px;
   }
   .page-header {
     padding-bottom: 24px;
@@ -426,8 +816,35 @@
     font-size: 16px;
     line-height: 1.85;
     color: var(--ink-orig);
-    margin-bottom: 18px;
+    margin-bottom: 8px;
     cursor: text;
+  }
+  .bilingual-block {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(28, 27, 23, 0.06);
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .zh-translation {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 2px;
+  }
+  .zh-translation::before {
+    content: "中文释义";
+    display: block;
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
   }
   /* AI-cited content highlight */
   .hl {
@@ -555,6 +972,57 @@
     border-radius: 50%;
     background: var(--accent);
   }
+  .answer-block {
+    display: grid;
+    gap: 10px;
+  }
+  .answer-section {
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+  .answer-section:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .answer-label {
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .checklist {
+    display: grid;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .check-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 13px;
+  }
+  .check-item::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    margin-top: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--line-strong);
+    background: var(--bg-soft);
+    flex-shrink: 0;
+  }
+  .profile-card {
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    display: grid;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .profile-card b { color: var(--ink); }
   .cite {
     display: inline-flex;
     align-items: baseline;
@@ -701,13 +1169,17 @@
   @media (max-width: 1100px) {
     .pane-right { width: 420px; }
     .viewer-content { padding: 32px 36px 60px; }
+    .bilingual-block {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
   }
 </style>
 </head>
 <body>
 
 <div class="demo-banner">
-  <b>布局 C3 · 纯原文 + AI 全包</b>
+  <b>IZANOFFER · AI 留学顾问</b>
   <a href="布局C2_双语原文_demo.html">← C2 对比</a>
   <a href="布局C_双栏对话_demo.html">← C</a>
   <button onclick="reset()">↺ 重置</button>
@@ -716,16 +1188,16 @@
 <!-- LANDING -->
 <div class="landing" id="landing">
   <section class="hero">
-    <div class="hero-eyebrow">最简版 · 你看官网，AI 全程帮你看懂</div>
+    <div class="hero-eyebrow">给 DIY 留学生的 AI 留学顾问</div>
 
     <h1 class="serif">
-      官网在左，<br>
-      <em>AI 顾问</em>在右
+      <em>IZANOFFER</em><br>
+      你的 AI 留学顾问
     </h1>
 
     <p class="hero-sub">
-      问任何问题，AI 自动找到学校官网放在左边。<br>
-      AI 在右边把英文翻译成中文 + 总结重点 + 对你的处境给建议。
+      像中介一样帮你拆解申请要求，但每一步都基于官网。<br>
+      看懂学校信息、规划材料清单，自己也能完成留学申请。
     </p>
 
     <div class="hero-input-wrap">
@@ -738,9 +1210,22 @@
     </div>
     <div class="hero-hint">回车开始 · 支持粘贴 URL / 上传 PDF / 截图</div>
 
-    <div class="pills">
-      <div class="pill" onclick="ask('米兰理工有多少个硕士专业', 'q')">米兰理工有多少专业</div>
-      <div class="pill" onclick="ask('https://www.polimi.it/en/programmes/master', 'url')">↗ 试试粘贴一个 URL</div>
+    <div class="hero-auth">
+      <span class="auth-status" id="authStatus">正在连接 Clerk...</span>
+      <button class="auth-button" id="authButton" type="button">登录后开始规划</button>
+      <div class="auth-user" id="authUser"></div>
+      <div class="auth-note">登录后，我会先用 AI 对话帮你建立留学画像；也可以跳过，先直接看官网。</div>
+    </div>
+
+    <div class="quick-start">
+      <div class="quick-group">
+        <div class="quick-title">大家常问</div>
+        <div class="pills" id="trendingQuestions"></div>
+      </div>
+      <div class="quick-group">
+        <div class="quick-title">常用官网入口</div>
+        <div class="pills" id="trendingLinks"></div>
+      </div>
     </div>
   </section>
 </div>
@@ -756,8 +1241,74 @@
       <div class="session-title" id="sessionTitle">新会话</div>
     </div>
     <div class="topbar-right">
+      <div class="topbar-auth">
+        <span class="auth-status" id="appAuthStatus">未登录</span>
+      </div>
       <div class="topbar-model">Claude Sonnet ▾</div>
       <button class="topbar-back" onclick="reset()">← 回首页</button>
+    </div>
+  </div>
+
+  <div class="profile-guide" id="profileGuide">
+    <div class="profile-panel">
+      <div class="profile-chat-head">
+        <div class="profile-chat-title">
+          <b>AI 留学顾问正在了解你</b>
+          <span>像聊天一样回答。不会的可以跳过，后面也能补充。</span>
+        </div>
+        <button class="profile-skip" type="button" onclick="skipProfileGuide()">先跳过</button>
+      </div>
+      <div class="profile-chat-body" id="profileChatBody"></div>
+      <div class="profile-chat-input">
+        <input id="profileChatInput" placeholder="直接回答这一题..." autocomplete="off">
+        <button type="button" onclick="skipProfileStep()">跳过</button>
+        <button type="button" class="primary" onclick="submitProfileAnswer()">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-center" id="userCenter">
+    <div class="user-panel">
+      <div class="user-head">
+        <div>
+          <h2>个人信息中心</h2>
+          <p id="userCenterSubtitle">管理账号、学生画像和后续申请偏好。</p>
+        </div>
+        <button class="user-close" type="button" onclick="closeUserCenter()">关闭</button>
+      </div>
+      <div class="user-section">
+        <div class="user-section-title">账号</div>
+        <div class="user-profile-grid" id="userAccountGrid"></div>
+      </div>
+      <div class="user-section">
+        <div class="user-section-title">学生画像</div>
+        <div class="user-profile-grid" id="userProfileGrid"></div>
+      </div>
+      <div class="user-actions">
+        <button type="button" class="primary" onclick="restartProfileGuide()">重新补充画像</button>
+        <button type="button" onclick="openClerkUserProfile()">账号设置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-center" id="mockAuthCenter">
+    <div class="user-panel">
+      <div class="user-head">
+        <div>
+          <h2>登录 / 注册</h2>
+          <p>本地测试账号系统。管理员账号：451248901@qq.com，测试密码：123456。</p>
+        </div>
+        <button class="user-close" type="button" onclick="closeMockAuth()">关闭</button>
+      </div>
+      <div class="mock-auth-form">
+        <input id="mockEmail" type="email" value="451248901@qq.com" placeholder="邮箱">
+        <input id="mockPassword" type="password" value="123456" placeholder="密码，至少 6 位">
+        <div class="mock-auth-error" id="mockAuthError"></div>
+        <div class="user-actions">
+          <button type="button" class="primary" onclick="submitMockAuth('login')">登录</button>
+          <button type="button" onclick="submitMockAuth('register')">注册</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -769,11 +1320,24 @@
           <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
         </div>
         <div class="viewer-url">polimi.it / programmes / master</div>
+        <div class="viewer-status">官网已解析</div>
         <button class="viewer-open" id="viewerOpen">↗ 在原网站打开</button>
       </div>
 
       <div class="viewer-body" id="viewerBody">
         <div class="viewer-content" id="docContent">
+          <div class="source-note">
+            <b>官网内容阅读器</b>
+            <div>这里显示从学校官网提取的正文，并在每段下方给出中文释义。右侧 AI 只能基于这些原文回答申请要求，并用 P1、P2 这类引用标回来源。</div>
+            <div class="source-note-row">
+              <span>来源：polimi.it</span>
+              <span>保留原文</span>
+              <span>中英双语</span>
+              <span>支持划词解读</span>
+              <span>可打开原网页核对</span>
+            </div>
+          </div>
+
           <div class="page-header">
             <div class="page-crest">PM</div>
             <div>
@@ -843,6 +1407,345 @@
 </button>
 
 <script>
+  const authButton = document.getElementById('authButton');
+  const authUser = document.getElementById('authUser');
+  const authStatus = document.getElementById('authStatus');
+  const appAuthStatus = document.getElementById('appAuthStatus');
+  let clerkReady = false;
+  let authRequired = false;
+  let pendingAsk = null;
+  let profileGuideShown = false;
+  let pendingScenario = null;
+  let profileStepIndex = 0;
+  let profileAnswers = {};
+  let savedProfile = null;
+  let mockUser = null;
+  const profileSteps = [
+    {
+      key: '学校',
+      question: '先说说你的学校背景吧。你现在是在读还是已经毕业？学校大概是什么类型？',
+      placeholder: '例如：双非一本，大三在读 / 国际高中 12 年级',
+      chips: ['985/211 本科', '双非本科', '国际高中', '已经毕业']
+    },
+    {
+      key: '专业',
+      question: '你现在的专业或学习方向是什么？如果想跨专业，也可以一起说。',
+      placeholder: '例如：本科金融，想申请商业分析 / 本科土木，想转建筑管理',
+      chips: ['计算机相关', '商科', '艺术设计', '想跨专业']
+    },
+    {
+      key: '成绩',
+      question: '你的成绩大概是什么水平？本科可以说 GPA/均分，高中可以说高考或平时成绩。',
+      placeholder: '例如：GPA 3.4/4.0，均分 86；高考 620',
+      chips: ['GPA 3.5+', '均分 85+', '高考 600+', '成绩还没整理']
+    },
+    {
+      key: '语言',
+      question: '语言成绩目前怎么样？雅思、托福、多邻国，或者还没考都可以。',
+      placeholder: '例如：雅思 6.5，小分 6；托福 95；还没考',
+      chips: ['雅思 6.5+', '托福 90+', '还没考', '准备刷分']
+    },
+    {
+      key: '目标国家',
+      question: '你更想去哪些国家或地区？如果还没定，我也可以帮你比较。',
+      placeholder: '例如：英国优先，也考虑澳洲和意大利',
+      chips: ['英国', '澳洲', '意大利', '还没定']
+    },
+    {
+      key: '预算',
+      question: '预算大概是多少？可以说总预算，也可以说一年能接受多少。',
+      placeholder: '例如：总预算 60 万以内 / 一年 30 万以内',
+      chips: ['一年 30 万内', '总预算 50 万内', '预算比较灵活', '想尽量省钱']
+    },
+    {
+      key: '动机偏好',
+      question: '最后说说你的申请动机和偏好：想就业、移民、排名、低预算、转专业，哪个最重要？',
+      placeholder: '例如：想转码，偏就业，希望一年制，不想太贵',
+      chips: ['偏就业', '看排名', '想移民', '低预算优先']
+    }
+  ];
+
+  initAuth();
+  loadTrending();
+
+  async function initAuth() {
+    authStatus.classList.add('active');
+    appAuthStatus.classList.add('active');
+
+    try {
+      const res = await fetch('/api/config');
+      const config = await res.json();
+      const key = config.clerkPublishableKey;
+
+      if (!key) {
+        authRequired = true;
+        mockUser = JSON.parse(localStorage.getItem('izanofferMockUser') || 'null');
+        if (mockUser) {
+          renderMockAuthState();
+          return;
+        }
+        authStatus.textContent = '本地测试登录';
+        authStatus.onclick = () => openMockAuth();
+        authStatus.style.cursor = 'pointer';
+        appAuthStatus.textContent = '本地测试登录';
+        appAuthStatus.onclick = () => openUserCenter();
+        appAuthStatus.style.cursor = 'pointer';
+        authButton.textContent = '登录 / 注册';
+        authButton.classList.remove('muted');
+        authButton.onclick = () => openMockAuth();
+        return;
+      }
+
+      await loadClerkJs(key);
+      await window.Clerk.load();
+      clerkReady = true;
+      authRequired = true;
+      renderAuthState();
+      window.Clerk.addListener(renderAuthState);
+    } catch (err) {
+      authStatus.textContent = '登录服务连接失败';
+      appAuthStatus.textContent = '登录不可用';
+      authButton.textContent = '重试登录';
+      authButton.onclick = initAuth;
+    }
+  }
+
+  async function loadTrending() {
+    const fallback = {
+      questions: [
+        { label: '我适合英国一年制吗', prompt: '我适合申请英国一年制硕士吗？' },
+        { label: '双非 GPA 3.4 能申哪', prompt: '双非 GPA 3.4 可以申请哪些学校？' },
+        { label: '申请材料清单', prompt: '留学申请材料清单怎么准备？' },
+        { label: '雅思 6.5 能申什么', prompt: '雅思 6.5 可以申请哪些项目？' }
+      ],
+      links: [
+        { label: 'UCL 计算机硕士官网', url: 'https://www.ucl.ac.uk/prospective-students/graduate/taught-degrees/computer-science-msc' },
+        { label: '米兰理工官网', url: 'https://www.polimi.it/en/' }
+      ]
+    };
+    try {
+      const res = await fetch('/api/trending');
+      const data = res.ok ? await res.json() : fallback;
+      renderTrending(data);
+    } catch {
+      renderTrending(fallback);
+    }
+  }
+
+  function renderTrending(data) {
+    const questionWrap = document.getElementById('trendingQuestions');
+    const linkWrap = document.getElementById('trendingLinks');
+    questionWrap.innerHTML = '';
+    linkWrap.innerHTML = '';
+
+    (data.questions || []).slice(0, 6).forEach(item => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'pill';
+      pill.textContent = item.label;
+      pill.onclick = () => ask(item.prompt || item.label, 'q');
+      questionWrap.appendChild(pill);
+    });
+
+    (data.links || []).slice(0, 6).forEach(item => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'pill link';
+      pill.textContent = item.label;
+      pill.onclick = () => ask(item.url, 'url');
+      linkWrap.appendChild(pill);
+    });
+  }
+
+  function loadClerkJs(key) {
+    return new Promise((resolve, reject) => {
+      if (window.Clerk) {
+        resolve();
+        return;
+      }
+
+      const frontendApi = key
+        .replace('pk_test_', '')
+        .replace('pk_live_', '')
+        .replaceAll('$', '+');
+      const host = atob(frontendApi);
+      const clerkJs = document.createElement('script');
+      clerkJs.async = true;
+      clerkJs.crossOrigin = 'anonymous';
+      clerkJs.dataset.clerkPublishableKey = key;
+      clerkJs.src = `https://${host}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`;
+      clerkJs.onload = () => resolve();
+      clerkJs.onerror = () => reject(new Error('ClerkJS load failed'));
+      document.head.appendChild(clerkJs);
+    });
+  }
+
+  function renderAuthState() {
+    const user = window.Clerk.user;
+    if (user) {
+      savedProfile = user.unsafeMetadata?.izanofferProfileComplete ? user.unsafeMetadata?.izanofferProfile : null;
+      authButton.style.display = 'none';
+      authStatus.textContent = user.primaryEmailAddress?.emailAddress || '已登录';
+      authStatus.onclick = () => openUserCenter();
+      authStatus.style.cursor = 'pointer';
+      appAuthStatus.textContent = savedProfile ? '已登录 · 画像已保存' : '已登录 · 待补充画像';
+      appAuthStatus.onclick = () => openUserCenter();
+      appAuthStatus.style.cursor = 'pointer';
+      authUser.classList.add('active');
+      authUser.innerHTML = '';
+      window.Clerk.mountUserButton(authUser, {
+        appearance: {
+          elements: {
+            userButtonAvatarBox: { width: '32px', height: '32px' }
+          }
+        }
+      });
+      if (pendingAsk) {
+        const next = pendingAsk;
+        pendingAsk = null;
+        ask(next.input, next.kind);
+      }
+      return;
+    }
+
+    authUser.classList.remove('active');
+    authUser.innerHTML = '';
+    authButton.style.display = 'inline-flex';
+    authButton.textContent = '登录后开始规划';
+    authButton.classList.remove('muted');
+    authButton.onclick = () => startSignIn();
+    authStatus.textContent = '未登录';
+    authStatus.onclick = null;
+    authStatus.style.cursor = '';
+    appAuthStatus.textContent = '未登录';
+    appAuthStatus.onclick = null;
+    appAuthStatus.style.cursor = '';
+  }
+
+  function startSignIn() {
+    if (!clerkReady && authRequired) {
+      openMockAuth();
+      return;
+    }
+    if (!clerkReady || !window.Clerk) {
+      alert('登录服务还没准备好，或 Clerk Key 尚未配置。');
+      return;
+    }
+    window.Clerk.openSignIn({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
+  }
+
+  function openMockAuth() {
+    document.getElementById('mockAuthError').textContent = '';
+    document.getElementById('mockAuthCenter').classList.add('active');
+  }
+
+  function closeMockAuth() {
+    document.getElementById('mockAuthCenter').classList.remove('active');
+  }
+
+  async function submitMockAuth(mode) {
+    const email = document.getElementById('mockEmail').value.trim();
+    const password = document.getElementById('mockPassword').value;
+    const error = document.getElementById('mockAuthError');
+    error.textContent = '';
+    try {
+      const res = await fetch(`/api/mock-auth/${mode}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '操作失败');
+      mockUser = data.user;
+      localStorage.setItem('izanofferMockUser', JSON.stringify(mockUser));
+      closeMockAuth();
+      renderMockAuthState();
+      if (pendingAsk) {
+        const next = pendingAsk;
+        pendingAsk = null;
+        ask(next.input, next.kind);
+      }
+    } catch (err) {
+      error.textContent = err.message;
+    }
+  }
+
+  function renderMockAuthState() {
+    savedProfile = mockUser?.profileComplete ? mockUser.profile : null;
+    authButton.style.display = 'none';
+    authStatus.textContent = `${mockUser.email}${mockUser.role === 'admin' ? ' · 管理员' : ''}`;
+    authStatus.onclick = () => openUserCenter();
+    authStatus.style.cursor = 'pointer';
+    appAuthStatus.textContent = savedProfile ? '本地账号 · 画像已保存' : '本地账号 · 待补充画像';
+    appAuthStatus.onclick = () => openUserCenter();
+    appAuthStatus.style.cursor = 'pointer';
+    authUser.classList.add('active');
+    authUser.innerHTML = `<button class="auth-button" type="button" onclick="openUserCenter()">个人中心</button>`;
+  }
+
+  function openUserCenter() {
+    renderUserCenter();
+    document.getElementById('userCenter').classList.add('active');
+  }
+
+  function closeUserCenter() {
+    document.getElementById('userCenter').classList.remove('active');
+  }
+
+  function renderUserCenter() {
+    const profile = getStoredProfile();
+    const user = window.Clerk?.user;
+    const email = user?.primaryEmailAddress?.emailAddress || mockUser?.email || (authRequired ? '未登录' : '演示模式用户');
+    document.getElementById('userCenterSubtitle').textContent = profile ? '你的学生画像会用于后续选校、材料和官网解读判断。' : '还没有完整画像。补充后，AI 顾问会给出更贴合你的建议。';
+
+    renderInfoGrid('userAccountGrid', {
+      '登录状态': user || mockUser ? '已登录' : (authRequired ? '未登录' : '演示模式'),
+      '邮箱': email,
+      '角色': user ? 'Clerk 用户' : (mockUser?.role === 'admin' ? '管理员' : '普通用户'),
+      '画像状态': profile ? '已保存' : '待补充',
+      '数据位置': user ? 'Clerk 账号 metadata' : (mockUser ? '本地 users.json' : '本地演示存储')
+    });
+
+    renderInfoGrid('userProfileGrid', profile || {
+      '学校': '未填写',
+      '专业': '未填写',
+      '成绩': '未填写',
+      '语言': '未填写',
+      '目标国家': '未填写',
+      '预算': '未填写'
+    });
+  }
+
+  function renderInfoGrid(id, data) {
+    const grid = document.getElementById(id);
+    grid.innerHTML = '';
+    Object.entries(data).forEach(([key, value]) => {
+      const item = document.createElement('div');
+      item.className = 'user-profile-item';
+      item.innerHTML = `<b>${escapeHtml(key)}</b><span>${escapeHtml(String(value || '未填写'))}</span>`;
+      grid.appendChild(item);
+    });
+  }
+
+  function restartProfileGuide() {
+    closeUserCenter();
+    profileGuideShown = false;
+    startProfileChat();
+    document.getElementById('profileGuide').classList.add('active');
+  }
+
+  function openClerkUserProfile() {
+    if (window.Clerk?.openUserProfile) {
+      window.Clerk.openUserProfile();
+    } else if (mockUser) {
+      alert(`本地测试账号：${mockUser.email}\\n角色：${mockUser.role === 'admin' ? '管理员' : '普通用户'}`);
+    } else if (!authRequired) {
+      alert('当前是演示模式。配置 Clerk 后可以打开账号设置。');
+    } else {
+      startSignIn();
+    }
+  }
+
   const heroInput = document.getElementById('heroInput');
   heroInput.addEventListener('keydown', e => {
     if (e.key === 'Enter' && heroInput.value.trim()) {
@@ -851,15 +1754,198 @@
       ask(v, isUrl ? 'url' : 'q');
     }
   });
+  document.getElementById('profileChatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitProfileAnswer();
+  });
 
   function ask(input, kind) {
+    if (authRequired && (!window.Clerk || !window.Clerk.user)) {
+      pendingAsk = { input, kind };
+      startSignIn();
+      return;
+    }
     const landing = document.getElementById('landing');
     const app = document.getElementById('app');
     landing.classList.add('hidden');
     setTimeout(() => {
       app.classList.add('active');
-      runScenario(input, kind);
+      pendingScenario = { input, kind };
+      maybeShowProfileGuide();
     }, 280);
+  }
+
+  function maybeShowProfileGuide() {
+    savedProfile = getStoredProfile();
+    if (savedProfile && Object.keys(savedProfile).length) {
+      profileGuideShown = true;
+      continuePendingScenario(savedProfile);
+      return;
+    }
+    if (profileGuideShown) {
+      continuePendingScenario();
+      return;
+    }
+    profileGuideShown = true;
+    startProfileChat();
+    document.getElementById('profileGuide').classList.add('active');
+  }
+
+  function skipProfileGuide() {
+    document.getElementById('profileGuide').classList.remove('active');
+    continuePendingScenario(profileAnswers);
+  }
+
+  function startProfileChat() {
+    profileStepIndex = 0;
+    profileAnswers = {};
+    document.getElementById('profileChatBody').innerHTML = '';
+    addProfileBotMessage('我会先像顾问一样快速了解你的情况。你不需要一次性填表，我问一句你答一句；不会的就跳过。');
+    askProfileStep();
+  }
+
+  function askProfileStep() {
+    const step = profileSteps[profileStepIndex];
+    if (!step) {
+      finishProfileChat();
+      return;
+    }
+    document.getElementById('profileChatInput').placeholder = step.placeholder;
+    addProfileBotMessage(step.question, step.chips);
+    setTimeout(() => document.getElementById('profileChatInput').focus(), 50);
+  }
+
+  function submitProfileAnswer(value = null) {
+    const input = document.getElementById('profileChatInput');
+    const answer = (value ?? input.value).trim();
+    const step = profileSteps[profileStepIndex];
+    if (!step) return;
+    if (answer) {
+      profileAnswers[step.key] = answer;
+      addProfileUserMessage(answer);
+    } else {
+      addProfileUserMessage('先跳过');
+    }
+    input.value = '';
+    profileStepIndex += 1;
+    setTimeout(askProfileStep, 260);
+  }
+
+  function skipProfileStep() {
+    submitProfileAnswer('');
+  }
+
+  function finishProfileChat() {
+    const count = Object.keys(profileAnswers).length;
+    if (count) saveProfileToAccount(profileAnswers);
+    addProfileBotMessage(count ? `好，我已经把这 ${count} 条背景信息保存到你的账号画像里了。接下来我会结合你的画像和左侧官网内容来判断。` : '没关系，我们先直接看官网。后面你随时可以补充背景。');
+    setTimeout(() => {
+      document.getElementById('profileGuide').classList.remove('active');
+      continuePendingScenario(profileAnswers);
+    }, 650);
+  }
+
+  function continuePendingScenario(profile = null) {
+    if (!pendingScenario) return;
+    const { input, kind } = pendingScenario;
+    pendingScenario = null;
+    runScenario(input, kind);
+    if (profile && Object.keys(profile).length) {
+      setTimeout(() => addProfileContext(profile), 350);
+    }
+  }
+
+  function getStoredProfile() {
+    if (window.Clerk?.user?.unsafeMetadata?.izanofferProfileComplete && window.Clerk.user.unsafeMetadata.izanofferProfile) {
+      return window.Clerk.user.unsafeMetadata.izanofferProfile;
+    }
+    if (mockUser?.profileComplete && mockUser.profile) {
+      return mockUser.profile;
+    }
+    try {
+      if (localStorage.getItem('izanofferProfileComplete') !== 'true') return null;
+      return JSON.parse(localStorage.getItem('izanofferProfile') || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  async function saveProfileToAccount(profile) {
+    savedProfile = profile;
+    if (mockUser) {
+      try {
+        const res = await fetch('/api/mock-auth/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: mockUser.email, profile })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '保存失败');
+        mockUser = data.user;
+        localStorage.setItem('izanofferMockUser', JSON.stringify(mockUser));
+        appAuthStatus.textContent = '本地账号 · 画像已保存';
+        return;
+      } catch (err) {
+        console.warn('Mock profile save failed, falling back to localStorage', err);
+      }
+    }
+    if (window.Clerk?.user) {
+      try {
+        await window.Clerk.user.update({
+          unsafeMetadata: {
+            ...window.Clerk.user.unsafeMetadata,
+            izanofferProfile: profile,
+            izanofferProfileComplete: true,
+            izanofferProfileUpdatedAt: new Date().toISOString()
+          }
+        });
+        appAuthStatus.textContent = '已登录 · 画像已保存';
+        return;
+      } catch (err) {
+        console.warn('Clerk profile save failed, falling back to localStorage', err);
+      }
+    }
+    localStorage.setItem('izanofferProfile', JSON.stringify(profile));
+    localStorage.setItem('izanofferProfileComplete', 'true');
+    if (!authRequired) appAuthStatus.textContent = '演示模式 · 画像已本地保存';
+  }
+
+  function addProfileBotMessage(text, chips = []) {
+    const body = document.getElementById('profileChatBody');
+    const div = document.createElement('div');
+    div.className = 'profile-chat-msg';
+    div.innerHTML = `
+      <div class="profile-chat-av">留</div>
+      <div class="profile-chat-bubble">
+        ${escapeHtml(text)}
+        ${chips.length ? `<div class="profile-quick">${chips.map(chip => `<button type="button" data-profile-chip="${escapeHtml(chip)}">${escapeHtml(chip)}</button>`).join('')}</div>` : ''}
+      </div>
+    `;
+    body.appendChild(div);
+    div.querySelectorAll('[data-profile-chip]').forEach(btn => {
+      btn.addEventListener('click', () => submitProfileAnswer(btn.dataset.profileChip));
+    });
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addProfileUserMessage(text) {
+    const body = document.getElementById('profileChatBody');
+    const div = document.createElement('div');
+    div.className = 'profile-chat-msg user';
+    div.innerHTML = `
+      <div class="profile-chat-av">我</div>
+      <div class="profile-chat-bubble">${escapeHtml(text)}</div>
+    `;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addProfileContext(profile) {
+    const lines = Object.entries(profile).map(([k, v]) => `<br>• <b>${escapeHtml(k)}</b>：${escapeHtml(v)}`).join('');
+    addAiMsg(`
+      <div class="skill-chip">学生画像 · 已记录</div>
+      我会把这些信息作为后续判断依据；登录后这些内容会保存在你的账号画像里。你给的信息越完整，我越能帮你判断项目匹配度、申请风险和材料优先级。
+      ${lines}
+    `);
   }
 
   function reset() {
@@ -872,6 +1958,7 @@
       window.scrollTo({ top: 0 });
       document.getElementById('chatMsgs').innerHTML = '';
       document.getElementById('suggests').innerHTML = '';
+      pendingScenario = null;
     }, 300);
   }
 
@@ -880,41 +1967,183 @@
     document.getElementById('sessionTitle').textContent = kind === 'url' ? input : input;
 
     if (kind === 'url') {
-      // Show URL paste flow: AI says "I'll fetch this for you"
       addUserMsg('帮我看下：' + input);
       setTimeout(() => {
         addAiMsg(`
-          <div class="skill-chip">URL 抓取</div>
-          收到 · 正在打开 <span class="mono" style="font-size: 11px; color: var(--ink-soft);">polimi.it/programmes/master</span> 并帮你读完...
+          <div class="skill-chip">URL 抓取 · 官网阅读器</div>
+          收到 · 正在抓取官网正文，稍后会放到左侧阅读器里。
         `);
       }, 400);
-      setTimeout(() => onboardSummary(), 1600);
+      fetchOfficialUrl(input);
     } else {
       addUserMsg(input);
-      // AI auto-routed to school, onboarding directly
       setTimeout(() => onboardSummary(), 700);
     }
 
     setTimeout(() => setSuggests([
-      '工程类的英语项目有哪些',
-      '截止日期',
-      '我 GPA 3.4 双非能申吗',
+      '帮我生成申请材料清单',
+      '这页能看出截止日期吗',
+      '我双非 GPA 3.4 能申吗',
     ]), 2400);
   }
 
-  function onboardSummary() {
+  async function fetchOfficialUrl(url) {
+    try {
+      const res = await fetch('/api/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '抓取失败');
+      renderOfficialDoc(data);
+      setTimeout(() => onboardSummary(data), 500);
+    } catch (err) {
+      addAiMsg(`
+        <div class="skill-chip">抓取失败</div>
+        这个网址暂时没有成功解析：${escapeHtml(err.message)}
+        <br><br>
+        你可以换一个具体专业页面，或点击左侧“在原网站打开”手动核对。
+      `);
+    }
+  }
+
+  function renderOfficialDoc(data) {
+    const url = new URL(data.url);
+    document.querySelector('.viewer-url').textContent = `${data.host}${data.path}`.slice(0, 72);
+    document.getElementById('viewerOpen').onclick = () => window.open(data.url, '_blank');
+
+    const blocks = (data.blocks || []).slice(0, 42);
+    const content = blocks.map((block, i) => {
+      const ref = `P${i + 1}`;
+      const text = escapeHtml(block.text);
+      const zh = escapeHtml(translatePreview(block.text));
+      if (block.tag === 'h1') return `
+        <div class="bilingual-block">
+          <h1 class="doc-title"><span class="hl" data-ref="${ref}">${text}</span></h1>
+          <div class="zh-translation">${zh}</div>
+        </div>`;
+      if (block.tag === 'h2' || block.tag === 'h3') return `
+        <div class="bilingual-block">
+          <h2 class="doc-section"><span class="hl" data-ref="${ref}">${text}</span></h2>
+          <div class="zh-translation">${zh}</div>
+        </div>`;
+      return `
+        <div class="bilingual-block">
+          <p class="doc-p"><span class="hl" data-ref="${ref}">${text}</span></p>
+          <div class="zh-translation">${zh}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('docContent').innerHTML = `
+      <div class="source-note">
+        <b>官网内容阅读器</b>
+        <div>这里显示从学校官网提取的正文，并在每段下方给出中文释义。右侧 AI 只能基于这些原文回答申请要求，并用 P1、P2 这类引用标回来源。</div>
+        <div class="source-note-row">
+          <span>来源：${escapeHtml(data.host)}</span>
+          <span>已提取 ${blocks.length} 段</span>
+          <span>保留原文</span>
+          <span>中英双语</span>
+          <span>支持划词解读</span>
+          <span>可打开原网页核对</span>
+        </div>
+      </div>
+
+      <div class="page-header">
+        <div class="page-crest">${escapeHtml(data.host.slice(0, 2).toUpperCase())}</div>
+        <div>
+          <div class="page-school">${escapeHtml(data.host)}</div>
+          <div class="page-dept">${escapeHtml(data.path)}</div>
+        </div>
+      </div>
+
+      <h1 class="doc-title">${escapeHtml(data.title)}</h1>
+      ${content || '<p class="doc-p">这个页面没有提取到足够正文。建议打开原网页核对，或粘贴更具体的专业/申请要求页面。</p>'}
+    `;
+  }
+
+  function translatePreview(text) {
+    const rules = [
+      [/A minimum of an upper second-class UK Bachelor's degree/i, '最低要求通常是英国 2:1 本科学位，或同等国际学历。'],
+      [/international qualification of an equivalent standard/i, '国际学生需要提供与该英国学位等级相当的学历证明。'],
+      [/English language level/i, '这一段说明该课程的英语语言等级要求。'],
+      [/application/i, '这一段与申请流程、申请材料或申请资格有关，需要重点核对。'],
+      [/deadline|closing date/i, '这一段可能涉及截止日期或申请关闭时间，需要以官网原文为准。'],
+      [/tuition|fees/i, '这一段可能涉及学费、费用或奖学金信息。'],
+      [/Bachelor|degree/i, '这一段说明学历背景要求，通常用于判断你是否满足申请门槛。'],
+      [/portfolio/i, '这一段可能涉及作品集要求，设计、建筑、艺术类申请尤其要注意。'],
+      [/programming|computer science|mathematical/i, '这一段说明课程背景或技能要求，需要和你的本科课程经历做匹配。'],
+      [/course|programme/i, '这一段介绍课程或项目内容，可以用来判断专业方向是否适合你。'],
+    ];
+    const matched = rules.find(([pattern]) => pattern.test(text));
+    if (matched) return matched[1] + ' 原文要点：' + compactChinesePreview(text);
+    return '这段是官网原文内容，当前原型先给出机器辅助释义；正式版本会用 AI 翻译并保留申请关键词。原文要点：' + compactChinesePreview(text);
+  }
+
+  function compactChinesePreview(text) {
+    return text
+      .replace(/\bprogramme\b/gi, '项目')
+      .replace(/\bcourse\b/gi, '课程')
+      .replace(/\bapplicants?\b/gi, '申请人')
+      .replace(/\brequirements?\b/gi, '要求')
+      .replace(/\bdegree\b/gi, '学位')
+      .replace(/\bBachelor's\b/gi, '本科')
+      .replace(/\bMaster\b/gi, '硕士')
+      .slice(0, 180);
+  }
+
+  function onboardSummary(data = null) {
+    if (data) {
+      const firstRefs = (data.blocks || []).slice(0, 3).map((_, i) => `<span class="cite" onclick="flashHl('P${i + 1}')">P${i + 1}</span>`).join('');
+      addAiMsg(`
+        <div class="skill-chip">AI 留学顾问 · 真实官网抓取</div>
+        <div class="answer-block">
+          <div class="answer-section">
+            <div class="answer-label">结论</div>
+            我已经抓取并解析了 <b>${escapeHtml(data.host)}</b> 的官网内容。左侧现在是可划词、可引用的官网阅读器。
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">官网依据</div>
+            我会优先引用左侧原文回答。当前页面前几段来源可点这里核对：${firstRefs || '暂无可引用段落'}。
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">下一步</div>
+            你可以直接问：申请要求是什么、截止日期在哪里、需要哪些材料、我的背景能不能申。涉及硬性要求时，如果左侧没写，我会明确说“当前页没找到”。
+          </div>
+        </div>
+        <div class="source-tag">来源 ${escapeHtml(data.host)} · 实时抓取</div>
+      `);
+      return;
+    }
+
     addAiMsg(`
-      <div class="skill-chip">官网解读 · 主动总结</div>
-      我已经把左边这一页读完了。一句话总结 ——
-      <br><br>
-      <b>米兰理工的硕士项目（Laurea Magistrale）</b>：学制 2 年 / 120 ECTS。三个学院总共 <b>49 个项目</b><span class="cite" onclick="flashHl('P4')">P4</span>，其中 <b>33 个全英语授课</b><span class="cite" onclick="flashHl('P5')">P5</span>，对中国学生开放。
-      <br><br>
-      <b>对你而言要关注的：</b>
-      <br>• 申请窗口每年 <b>11 月到次年 3 月</b>
-      <br>• 学历门槛：3 年以上本科 + 学业良好
-      <br>• 语言和先修课每个项目不同，需要单独查
-      <br><br>
-      <i style="color: var(--ink-soft);">想看哪段细节，直接问我，或者在左边划选一段让我翻译解读。</i>
+      <div class="skill-chip">AI 留学顾问 · 基于官网</div>
+      <div class="answer-block">
+        <div class="answer-section">
+          <div class="answer-label">结论</div>
+          <b>这是一页米兰理工硕士项目总览。</b>如果你想 DIY 申请，先用它判断项目数量、授课语言和基础门槛，再进入具体专业页面核对详细要求。
+        </div>
+        <div class="answer-section">
+          <div class="answer-label">官网依据</div>
+          官网写明硕士项目通常为 <b>2 年 / 120 ECTS</b><span class="cite" onclick="flashHl('P1')">P1</span>。三个学院共 <b>49 个硕士项目</b><span class="cite" onclick="flashHl('P4')">P4</span>，其中 <b>33 个全英文授课</b><span class="cite" onclick="flashHl('P5')">P5</span>。
+        </div>
+        <div class="answer-section">
+          <div class="answer-label">对你的影响</div>
+          如果你不会意大利语，可以优先筛选全英文项目；但具体专业还要继续核对语言成绩、先修课、作品集或课程匹配要求。
+        </div>
+        <div class="answer-section">
+          <div class="answer-label">下一步</div>
+          <div class="checklist">
+            <div class="check-item">选择 3-5 个目标专业，逐个打开专业详情页。</div>
+            <div class="check-item">核对每个专业的语言、GPA、课程背景和材料要求。</div>
+            <div class="check-item">把你的本科背景、GPA、语言成绩填进背景卡，让我帮你判断匹配度。</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-card">
+        <b>建议补充背景</b>
+        <div>本科院校 / 专业 / GPA / 语言成绩 / 目标国家 / 想申专业方向</div>
+      </div>
       <div class="source-tag">来源 polimi.it · 抓取于今日</div>
     `);
   }
@@ -1041,11 +2270,74 @@
           setTimeout(() => btn.classList.remove('nudge'), 4500);
         }
         setTimeout(() => {
-          addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式 · 真实版本会基于左边官网继续给你具体答案）</i>');
+          addAiMsg(answerSuggestion(txt));
         }, 400);
       };
       wrap.appendChild(div);
     });
+  }
+
+  function answerSuggestion(txt) {
+    if (txt.includes('材料')) {
+      return `
+        <div class="skill-chip">申请清单 · 基于当前官网页</div>
+        <div class="answer-block">
+          <div class="answer-section">
+            <div class="answer-label">先能确定的</div>
+            当前页能确认这是硕士申请场景：2 年 / 120 ECTS<span class="cite" onclick="flashHl('P1')">P1</span>，需要本科或同等学历背景。
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">初版材料清单</div>
+            <div class="checklist">
+              <div class="check-item">本科成绩单和在读/毕业证明</div>
+              <div class="check-item">语言成绩，具体分数要进入专业页确认</div>
+              <div class="check-item">个人简历、动机信，设计类可能还需要作品集</div>
+              <div class="check-item">课程匹配说明，用来证明你满足先修课要求</div>
+            </div>
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">需要继续核对</div>
+            这页没有列出完整材料要求。建议打开具体专业页面，我会继续逐项引用官网原文。
+          </div>
+        </div>
+      `;
+    }
+    if (txt.includes('截止')) {
+      return `
+        <div class="skill-chip">截止日期 · 官网依据检查</div>
+        <div class="answer-block">
+          <div class="answer-section">
+            <div class="answer-label">结论</div>
+            当前页只出现了非欧盟申请窗口：<b>11 月到次年 3 月</b>。它不像精确 deadline，所以不能当成最终截止日期。
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">官网依据</div>
+            左侧原文写的是 standard application window，而不是 final deadline。建议点“在原网站打开”或继续粘贴 admission 页面核对。
+          </div>
+          <div class="answer-section">
+            <div class="answer-label">下一步</div>
+            我会优先找 admission / deadlines / how to apply 页面，再把精确日期标出来。
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="skill-chip">背景评估 · 需要更多信息</div>
+      <div class="answer-block">
+        <div class="answer-section">
+          <div class="answer-label">结论</div>
+          只凭这页还不能判断你能不能申。官网只写了需要本科或同等学历、学业表现良好，具体门槛要看目标专业。
+        </div>
+        <div class="answer-section">
+          <div class="answer-label">我需要你补充</div>
+          本科专业、百分制均分或 GPA、语言成绩、目标专业方向、是否有作品集或项目经历。
+        </div>
+        <div class="answer-section">
+          <div class="answer-label">下一步</div>
+          你把背景发给我，我会按“官网要求 vs 你的背景”逐项标成：稳、冲、风险、缺材料。
+        </div>
+      </div>
+    `;
   }
   function sendApp() {
     const input = document.getElementById('appInput');
@@ -1056,12 +2348,25 @@
       addUserMsg('帮我看下：' + v);
       input.value = '';
       setTimeout(() => {
-        addAiMsg(`<div class="skill-chip">URL 抓取</div>正在打开新链接 ${v.substring(0, 40)}... (Demo)`);
+        addAiMsg(`
+          <div class="skill-chip">URL 抓取 · 官网阅读器</div>
+          已收到新官网链接。正在抓取正文、提取标题和申请要求，并把左侧替换成可引用的官网内容。
+          <div class="source-tag">${escapeHtml(v.substring(0, 56))}${v.length > 56 ? '...' : ''}</div>
+        `);
+        fetchOfficialUrl(v);
       }, 400);
     } else {
       addUserMsg(v);
       input.value = '';
-      setTimeout(() => addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式）</i>'), 400);
+      setTimeout(() => addAiMsg(`
+        <div class="skill-chip">AI 留学顾问</div>
+        <div class="answer-block">
+          <div class="answer-section">
+            <div class="answer-label">我会怎么处理</div>
+            真实版本会先检查左侧官网原文是否能回答这个问题；如果不能，我会告诉你“当前官网页没有写”，再建议你补充新的官网链接。
+          </div>
+        </div>
+      `), 400);
     }
   }
   document.getElementById('appInput').addEventListener('keydown', e => {

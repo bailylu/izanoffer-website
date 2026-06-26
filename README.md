@@ -31,6 +31,9 @@ izanoffer/
 │       └── 0002-brand-name-izanoffer.md # 决定：品牌名
 ├── prototypes/                          # 交互原型（HTML）
 │   ├── C3-prototype.html                ← 当前主原型
+│   ├── server.py                        ← 本地真实抓取 + 测试账号服务
+│   ├── trending.json                    ← 首页热门问题 / 官网入口数据
+│   ├── users.json                       ← 本地测试账号数据（仅原型）
 │   ├── C-history.html                   # 历史版本（双栏对话探索）
 │   └── C2-history.html                  # 历史版本（双语原文探索）
 └── research/                            # 市场与竞品调研
@@ -66,6 +69,50 @@ izanoffer/
 4. `research/market-and-competitor-research.docx` —— 行业全景与对手
 
 **做产品决策前**：先翻 `docs/product-plan-v0.3.md` 第 10.3 节（决策记录链）+ `docs/decisions/` 里的每篇记录。避免重复讨论已决定的事。
+
+---
+
+## 2026-06-26 原型进展
+
+今天把 `prototypes/C3-prototype.html` 从静态交互稿推进成可真实测试的 MVP 原型：
+
+- **定位文案**：首屏改为 `IZANOFFER · 你的 AI 留学顾问`，强调像中介一样拆解申请要求，但每一步基于官网。
+- **官网内容阅读器**：新增 `prototypes/server.py`，支持 `POST /api/extract` 真实抓取学校官网正文；左侧显示中英双语、可引用段落、可划词解读。
+- **AI 顾问回答结构**：右侧回答统一为 `结论 / 官网依据 / 对你的影响 / 下一步`，引用左侧 P1/P2/P3 原文。
+- **学生画像引导**：用户开始提问后进入聊天式引导，收集学校、专业、成绩、语言、目标国家、预算、动机偏好；可跳过。
+- **账号与画像**：接入 Clerk 的前端骨架；未配置 Clerk 时提供本地测试账号系统。画像保存到 Clerk metadata；本地测试时保存到 `users.json`。
+- **个人信息中心**：新增账号状态、学生画像、重新补充画像、账号设置入口。
+- **动态热门入口**：首页 `大家常问` 和 `常用官网入口` 改为从 `GET /api/trending` 读取，数据源在 `prototypes/trending.json`。
+
+本地真实测试：
+
+```bash
+cd prototypes
+python3 server.py 5173
+```
+
+打开：
+
+```text
+http://127.0.0.1:5173/C3-prototype.html
+```
+
+本地测试管理员账号：
+
+```text
+邮箱：451248901@qq.com
+密码：123456
+角色：admin
+```
+
+如果要测试 Clerk：
+
+```bash
+cd prototypes
+CLERK_PUBLISHABLE_KEY=pk_test_xxx python3 server.py 5173
+```
+
+注意：`file://.../C3-prototype.html` 只能看静态页面，真实抓取、动态热门数据、登录接口都需要通过 `http://127.0.0.1:5173/C3-prototype.html` 访问。
 
 ---
 

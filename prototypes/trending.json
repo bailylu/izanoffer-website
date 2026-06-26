@@ -1,0 +1,38 @@
+{
+  "questions": [
+    {
+      "label": "我适合英国一年制吗",
+      "prompt": "我适合申请英国一年制硕士吗？"
+    },
+    {
+      "label": "双非 GPA 3.4 能申哪",
+      "prompt": "双非 GPA 3.4 可以申请哪些学校？"
+    },
+    {
+      "label": "申请材料清单",
+      "prompt": "留学申请材料清单怎么准备？"
+    },
+    {
+      "label": "雅思 6.5 能申什么",
+      "prompt": "雅思 6.5 可以申请哪些项目？"
+    }
+  ],
+  "links": [
+    {
+      "label": "UCL 计算机硕士官网",
+      "url": "https://www.ucl.ac.uk/prospective-students/graduate/taught-degrees/computer-science-msc"
+    },
+    {
+      "label": "米兰理工官网",
+      "url": "https://www.polimi.it/en/"
+    },
+    {
+      "label": "曼彻斯特硕士入口",
+      "url": "https://www.manchester.ac.uk/study/masters/"
+    },
+    {
+      "label": "悉尼大学课程官网",
+      "url": "https://www.sydney.edu.au/courses/courses/pc/master-of-computer-science.html"
+    }
+  ]
+}
