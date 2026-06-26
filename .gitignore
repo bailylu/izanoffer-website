@@ -1,0 +1,89 @@
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ===== 编辑器 / IDE =====
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.cursor/
+
+# ===== Node / 前端 =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+.next/
+.nuxt/
+out/
+.cache/
+.parcel-cache/
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# ===== 环境变量 / 敏感信息（极重要：永远不要 commit）=====
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+secrets.json
+*.pem
+*.key
+
+# ===== 日志 / 临时文件 =====
+*.log
+*.tmp
+*.temp
+*.bak
+tmp/
+temp/
+
+# ===== Office 临时文件 =====
+~$*.docx
+~$*.xlsx
+~$*.pptx
+.~lock.*
+
+# ===== 数据库 / 本地数据 =====
+*.sqlite
+*.sqlite3
+*.db
+data/local/
+*.dump
+
+# ===== 测试覆盖率 =====
+coverage/
+.nyc_output/
+
+# ===== 部署 / CI =====
+.vercel
+.netlify
+.serverless/
+
+# ===== 项目专用 =====
+# 抓取的原始官网快照（数据量大，不入库）
+crawler/raw/
+crawler/snapshots/
+# 模型 / embedding 缓存
+.cache/embeddings/
+# 个人调试用的 scratch 文件
+scratch/
+TODO.local.md
