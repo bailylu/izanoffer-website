@@ -768,7 +768,7 @@
         <div class="viewer-tabs">
           <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
         </div>
-        <div class="viewer-url">polimi.it / programmes / master</div>
+        <div class="viewer-url" id="viewerUrl">polimi.it / programmes / master</div>
         <button class="viewer-open" id="viewerOpen">↗ 在原网站打开</button>
       </div>
 
@@ -875,20 +875,126 @@
     }, 300);
   }
 
+  // 保存原始米兰理工内容，方便用户切回
+  const ORIGINAL_POLIMI_HTML = document.getElementById('docContent').innerHTML;
+  // 记录左边当前显示的"真实 URL"，给"↗ 在原网站打开"按钮用
+  let currentUrl = 'https://www.polimi.it/en/programmes/master';
+
+  // 让"↗ 在原网站打开"按钮真的可点击
+  document.getElementById('viewerOpen').addEventListener('click', () => {
+    if (currentUrl) window.open(currentUrl, '_blank', 'noopener');
+  });
+
+  function getDomain(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ''); }
+    catch { return url; }
+  }
+  function getUrlPath(url) {
+    try {
+      const u = new URL(url);
+      return (u.hostname.replace(/^www\./, '') + u.pathname).replace(/\/$/, '');
+    } catch { return url; }
+  }
+  function getCrestText(domain) {
+    const main = domain.split('.')[0];
+    return main.substring(0, 2).toUpperCase();
+  }
+
+  function renderFromUrl(url) {
+    // 0) 记录当前 URL，让"↗ 在原网站打开"按钮能跳到这里
+    currentUrl = url;
+    // 1) 更新 URL 栏
+    document.getElementById('viewerUrl').textContent = getUrlPath(url);
+
+    // 2) 如果是已知学校（polimi），还原原始内容；否则渲染通用占位
+    const domain = getDomain(url).toLowerCase();
+    const doc = document.getElementById('docContent');
+
+    if (domain.includes('polimi')) {
+      doc.innerHTML = ORIGINAL_POLIMI_HTML;
+      return 'known-polimi';
+    }
+
+    // 通用占位：先 loading，再"抓取完成"
+    doc.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px;">
+        <div style="display: inline-block; width: 32px; height: 32px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin-bottom: 16px;"></div>
+        <div style="color: var(--ink-soft); font-size: 14px;">正在抓取 <b>${getDomain(url)}</b> ...</div>
+        <div style="color: var(--ink-dim); font-size: 11px; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">headless browser · reader mode · 翻译就绪</div>
+      </div>
+      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    `;
+
+    setTimeout(() => {
+      doc.innerHTML = `
+        <div class="page-header">
+          <div class="page-crest">${getCrestText(domain)}</div>
+          <div>
+            <div class="page-school">${getDomain(url)}</div>
+            <div class="page-dept">通过 URL 粘贴抓取 · ${new Date().toLocaleDateString()}</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(178,84,56,0.06); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 28px; font-size: 13px; color: var(--ink-soft); line-height: 1.7;">
+          <b>Demo 模式说明</b><br>
+          这是原型演示。真实产品上线后，后端会用 headless browser 真实抓取这个 URL 的页面内容（Reader 模式 · 可翻译 · 可划词解读）。<br><br>
+          现在你看到的是模拟界面，证明<b>"粘贴 URL → 左侧呈现 → AI 解读"</b>的完整 UX 流程可用。划词解读、引用高亮等所有交互都能继续在这里测试。
+        </div>
+
+        <h1 class="doc-title">Page Title / Section Heading</h1>
+
+        <p class="doc-p">
+          This is a placeholder representation of the page content that would be fetched from <b>${getDomain(url)}</b>. In production, our backend will retrieve the actual page text and render it here in a clean reader-friendly view, preserving headings, paragraphs, lists and key data points.
+        </p>
+
+        <h2 class="doc-section">Section · Key Information</h2>
+
+        <p class="doc-p">
+          For demonstration purposes, the AI on the right has been primed with a generic interpretation of an academic / institutional page. You can still test all C3 interactions: <b>select any English text</b> below to trigger the floating "让 AI 解读这段" button, or click citation chips in the chat to highlight content here.
+        </p>
+
+        <p class="doc-p">
+          Real production flow:<br>
+          <b>1.</b> User pastes URL → frontend detects http(s):// prefix<br>
+          <b>2.</b> Backend fetches with Puppeteer / Playwright (handles JS rendering)<br>
+          <b>3.</b> Reader-mode extraction (removes nav, ads, footer)<br>
+          <b>4.</b> Render to this left panel + send full text to AI for analysis<br>
+          <b>5.</b> AI provides translation, summary, and student-context interpretation in the right chat
+        </p>
+
+        <p class="doc-p" style="margin-top: 24px; color: var(--ink-dim); font-size: 13px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+          ─── 试试在英文上划选一段 ───
+        </p>
+      `;
+    }, 1100);
+
+    return 'generic';
+  }
+
   function runScenario(input, kind) {
     document.getElementById('chatMsgs').innerHTML = '';
     document.getElementById('sessionTitle').textContent = kind === 'url' ? input : input;
 
     if (kind === 'url') {
-      // Show URL paste flow: AI says "I'll fetch this for you"
+      // 1) 立刻把 URL 渲染到左边（loading → 内容）
+      const renderKind = renderFromUrl(input);
+      const domain = getDomain(input);
+
+      // 2) 右边对话：用户消息 + AI "正在打开"
       addUserMsg('帮我看下：' + input);
       setTimeout(() => {
         addAiMsg(`
           <div class="skill-chip">URL 抓取</div>
-          收到 · 正在打开 <span class="mono" style="font-size: 11px; color: var(--ink-soft);">polimi.it/programmes/master</span> 并帮你读完...
+          收到 · 正在打开 <span class="mono" style="font-size: 11px; color: var(--ink-soft);">${getUrlPath(input)}</span> 并帮你读完...
         `);
       }, 400);
-      setTimeout(() => onboardSummary(), 1600);
+
+      // 3) 抓取完成后给摘要
+      if (renderKind === 'known-polimi') {
+        setTimeout(() => onboardSummary(), 1600);
+      } else {
+        setTimeout(() => onboardGenericUrl(input), 1800);
+      }
     } else {
       addUserMsg(input);
       // AI auto-routed to school, onboarding directly
@@ -896,10 +1002,24 @@
     }
 
     setTimeout(() => setSuggests([
-      '工程类的英语项目有哪些',
-      '截止日期',
-      '我 GPA 3.4 双非能申吗',
+      '这页重点说了什么',
+      '帮我翻译第一段',
+      '对中国学生意味着什么',
     ]), 2400);
+  }
+
+  function onboardGenericUrl(url) {
+    const domain = getDomain(url);
+    addAiMsg(`
+      <div class="skill-chip">官网解读 · 主动总结</div>
+      已经把 <b>${domain}</b> 这一页读完了。<br><br>
+      在<b>真实产品</b>里，这条消息会变成：基于抓取到的页面真实内容，给出一份针对中国学生的中文摘要 + 重点 + 行动建议（类似你试米兰理工那个 pill 时看到的效果）。<br><br>
+      <b>现在你可以测试这些交互：</b><br>
+      • 左边划选任意英文段落 → 浮出"让 AI 解读这段"按钮<br>
+      • 点击底部建议追问<br>
+      • 在下方输入框继续提问 / 粘贴新 URL
+      <div class="source-tag">来源 ${domain} · Demo 模拟抓取</div>
+    `);
   }
 
   function onboardSummary() {
@@ -1053,15 +1173,26 @@
     const v = input.value.trim();
     const isUrl = /^https?:\/\//i.test(v);
     if (isUrl) {
+      // 同样触发左侧更新 + AI 响应
+      const renderKind = renderFromUrl(v);
       addUserMsg('帮我看下：' + v);
       input.value = '';
+      document.getElementById('sessionTitle').textContent = v;
       setTimeout(() => {
-        addAiMsg(`<div class="skill-chip">URL 抓取</div>正在打开新链接 ${v.substring(0, 40)}... (Demo)`);
+        addAiMsg(`
+          <div class="skill-chip">URL 抓取</div>
+          切到新链接 · <span class="mono" style="font-size: 11px; color: var(--ink-soft);">${getUrlPath(v)}</span> 抓取中...
+        `);
       }, 400);
+      if (renderKind === 'known-polimi') {
+        setTimeout(() => onboardSummary(), 1600);
+      } else {
+        setTimeout(() => onboardGenericUrl(v), 1800);
+      }
     } else {
       addUserMsg(v);
       input.value = '';
-      setTimeout(() => addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式）</i>'), 400);
+      setTimeout(() => addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式 · 真实版本会根据问题继续从左边官网或知识库回答）</i>'), 400);
     }
   }
   document.getElementById('appInput').addEventListener('keydown', e => {
