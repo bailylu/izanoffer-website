@@ -216,6 +216,22 @@
     font-family: 'JetBrains Mono', monospace;
     margin-bottom: 24px;
   }
+  .login-required {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: min(720px, 100%);
+    margin: -6px auto 18px;
+    padding: 9px 13px;
+    border: 1px solid var(--accent-strong);
+    border-radius: 100px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .login-required.active { display: flex; }
   .pills {
     display: flex;
     gap: 8px;
@@ -360,6 +376,37 @@
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
     padding: 22px;
+  }
+  .admin-panel {
+    width: min(1180px, calc(100vw - 48px));
+    height: min(840px, calc(100vh - 48px));
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  .admin-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: var(--bg-card);
+  }
+  .admin-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    font-size: 18px;
+    cursor: pointer;
   }
   .user-head {
     display: flex;
@@ -598,16 +645,6 @@
     color: var(--bg);
     border-color: var(--ink);
   }
-  .topbar-model {
-    font-size: 11px;
-    color: var(--ink-soft);
-    padding: 5px 11px;
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: 100px;
-    cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-  }
   .topbar-back {
     background: transparent;
     border: 1px solid var(--line);
@@ -767,6 +804,59 @@
     padding: 3px 8px;
     background: var(--bg-card);
     font-size: 11px;
+  }
+  .official-picker {
+    padding: 56px 20px 32px;
+    color: var(--ink-soft);
+  }
+  .official-picker-head {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .official-picker-head h2 {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--ink);
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 10px;
+  }
+  .official-picker-head p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .official-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .official-card {
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--ink);
+    font: inherit;
+    transition: border-color .16s ease, transform .16s ease, background .16s ease;
+  }
+  .official-card:hover {
+    border-color: var(--accent);
+    background: var(--bg);
+    transform: translateY(-1px);
+  }
+  .official-card b {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 7px;
+  }
+  .official-card span {
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.55;
   }
   .page-header {
     padding-bottom: 24px;
@@ -1182,6 +1272,7 @@
   <b>IZANOFFER · AI 留学顾问</b>
   <a href="布局C2_双语原文_demo.html">← C2 对比</a>
   <a href="布局C_双栏对话_demo.html">← C</a>
+  <button onclick="openAdminCenter()">后台</button>
   <button onclick="reset()">↺ 重置</button>
 </div>
 
@@ -1200,15 +1291,16 @@
       看懂学校信息、规划材料清单，自己也能完成留学申请。
     </p>
 
-    <div class="hero-input-wrap">
+    <form class="hero-input-wrap" id="heroForm">
       <input
         id="heroInput"
         class="hero-input"
         type="text"
         placeholder="问问题，或直接粘贴一个学校官网 URL..."
         autocomplete="off">
-    </div>
+    </form>
     <div class="hero-hint">回车开始 · 支持粘贴 URL / 上传 PDF / 截图</div>
+    <div class="login-required" id="loginRequired">请先登录/注册账号，再开始使用 AI 留学顾问。</div>
 
     <div class="hero-auth">
       <span class="auth-status" id="authStatus">正在连接 Clerk...</span>
@@ -1230,6 +1322,59 @@
   </section>
 </div>
 
+<div class="user-center" id="userCenter">
+  <div class="user-panel">
+    <div class="user-head">
+      <div>
+        <h2>个人信息中心</h2>
+        <p id="userCenterSubtitle">管理账号、学生画像和后续申请偏好。</p>
+      </div>
+      <button class="user-close" type="button" onclick="closeUserCenter()">关闭</button>
+    </div>
+    <div class="user-section">
+      <div class="user-section-title">账号</div>
+      <div class="user-profile-grid" id="userAccountGrid"></div>
+    </div>
+    <div class="user-section">
+      <div class="user-section-title">学生画像</div>
+      <div class="user-profile-grid" id="userProfileGrid"></div>
+    </div>
+    <div class="user-actions">
+      <button type="button" class="primary" onclick="restartProfileGuide()">重新补充画像</button>
+      <button type="button" onclick="openClerkUserProfile()">账号设置</button>
+      <button type="button" onclick="openAdminCenter()">打开后台</button>
+    </div>
+  </div>
+</div>
+
+<div class="user-center" id="mockAuthCenter">
+  <div class="user-panel">
+    <div class="user-head">
+      <div>
+        <h2>登录 / 注册</h2>
+        <p>本地测试账号系统。管理员账号：451248901@qq.com，测试密码：123456。</p>
+      </div>
+      <button class="user-close" type="button" onclick="closeMockAuth()">关闭</button>
+    </div>
+    <div class="mock-auth-form">
+      <input id="mockEmail" type="email" value="451248901@qq.com" placeholder="邮箱">
+      <input id="mockPassword" type="password" value="123456" placeholder="密码，至少 6 位">
+      <div class="mock-auth-error" id="mockAuthError"></div>
+      <div class="user-actions">
+        <button type="button" class="primary" onclick="submitMockAuth('login')">登录</button>
+        <button type="button" onclick="submitMockAuth('register')">注册</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="user-center" id="adminCenter">
+  <div class="admin-panel">
+    <button class="admin-close" type="button" onclick="closeAdminCenter()">×</button>
+    <iframe id="adminFrame" title="IZANOFFER Admin"></iframe>
+  </div>
+</div>
+
 <!-- APP -->
 <div class="app" id="app">
   <div class="app-topbar">
@@ -1244,7 +1389,6 @@
       <div class="topbar-auth">
         <span class="auth-status" id="appAuthStatus">未登录</span>
       </div>
-      <div class="topbar-model">Claude Sonnet ▾</div>
       <button class="topbar-back" onclick="reset()">← 回首页</button>
     </div>
   </div>
@@ -1267,51 +1411,6 @@
     </div>
   </div>
 
-  <div class="user-center" id="userCenter">
-    <div class="user-panel">
-      <div class="user-head">
-        <div>
-          <h2>个人信息中心</h2>
-          <p id="userCenterSubtitle">管理账号、学生画像和后续申请偏好。</p>
-        </div>
-        <button class="user-close" type="button" onclick="closeUserCenter()">关闭</button>
-      </div>
-      <div class="user-section">
-        <div class="user-section-title">账号</div>
-        <div class="user-profile-grid" id="userAccountGrid"></div>
-      </div>
-      <div class="user-section">
-        <div class="user-section-title">学生画像</div>
-        <div class="user-profile-grid" id="userProfileGrid"></div>
-      </div>
-      <div class="user-actions">
-        <button type="button" class="primary" onclick="restartProfileGuide()">重新补充画像</button>
-        <button type="button" onclick="openClerkUserProfile()">账号设置</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="user-center" id="mockAuthCenter">
-    <div class="user-panel">
-      <div class="user-head">
-        <div>
-          <h2>登录 / 注册</h2>
-          <p>本地测试账号系统。管理员账号：451248901@qq.com，测试密码：123456。</p>
-        </div>
-        <button class="user-close" type="button" onclick="closeMockAuth()">关闭</button>
-      </div>
-      <div class="mock-auth-form">
-        <input id="mockEmail" type="email" value="451248901@qq.com" placeholder="邮箱">
-        <input id="mockPassword" type="password" value="123456" placeholder="密码，至少 6 位">
-        <div class="mock-auth-error" id="mockAuthError"></div>
-        <div class="user-actions">
-          <button type="button" class="primary" onclick="submitMockAuth('login')">登录</button>
-          <button type="button" onclick="submitMockAuth('register')">注册</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="split">
     <!-- LEFT -->
     <div class="pane-left">
@@ -1319,65 +1418,27 @@
         <div class="viewer-tabs">
           <div class="viewer-dot"></div><div class="viewer-dot"></div><div class="viewer-dot"></div>
         </div>
-        <div class="viewer-url" id="viewerUrl">polimi.it / programmes / master</div>
+        <div class="viewer-url" id="viewerUrl">等待选择官网 URL</div>
         <button class="viewer-open" id="viewerOpen">↗ 在原网站打开</button>
       </div>
 
       <div class="viewer-body" id="viewerBody">
         <div class="viewer-content" id="docContent">
           <div class="source-note">
-            <b>官网内容阅读器</b>
-            <div>这里显示从学校官网提取的正文，并在每段下方给出中文释义。右侧 AI 只能基于这些原文回答申请要求，并用 P1、P2 这类引用标回来源。</div>
+            <b>等待选择官网</b>
+            <div>粘贴学校或专业官网 URL，或者点击首页常用官网入口后，这里会显示抓取到的官网正文、中文释义和引用编号。</div>
             <div class="source-note-row">
-              <span>来源：polimi.it</span>
+              <span>未选择官网</span>
               <span>保留原文</span>
               <span>中英双语</span>
-              <span>支持划词解读</span>
               <span>可打开原网页核对</span>
             </div>
           </div>
 
-          <div class="page-header">
-            <div class="page-crest">PM</div>
-            <div>
-              <div class="page-school">Politecnico di Milano</div>
-              <div class="page-dept">Programmes / Master of Science</div>
-            </div>
+          <div style="text-align:center; padding:72px 20px; color:var(--ink-soft);">
+            <div style="font-family:'Noto Serif SC',serif; font-size:28px; color:var(--ink); margin-bottom:10px;">选择一个官网开始</div>
+            <div style="font-size:14px; line-height:1.8;">左侧内容会根据你粘贴或选择的官网实时更新，不再固定显示示例学校。</div>
           </div>
-
-          <h1 class="doc-title">Master of Science Programmes</h1>
-
-          <p class="doc-p">
-            <span class="hl" data-ref="P1">The Master of Science (Laurea Magistrale) is a second-cycle degree programme lasting 2 years and equivalent to 120 ECTS credits.</span> The University offers a comprehensive catalogue of postgraduate programmes across three Schools, designed to prepare graduates for academic, industrial and creative careers at international level.
-          </p>
-
-          <h2 class="doc-section">Three Schools</h2>
-
-          <p class="doc-p">
-            The <b>School of Engineering</b> offers <span class="hl" data-ref="P2">20 Master of Science programmes</span> covering disciplines such as mechanical, electrical, energy, civil, computer and management engineering. <span class="hl" data-ref="P3">Sixteen of these programmes are delivered entirely in English.</span>
-          </p>
-
-          <p class="doc-p">
-            The <b>School of Architecture, Urban Planning, Construction Engineering</b> offers 11 Master of Science programmes, including programmes in Architectural Design, Building Engineering and Urban Planning.
-          </p>
-
-          <p class="doc-p">
-            The <b>School of Design</b> offers 18 Master of Science programmes encompassing product design, communication design, fashion design, interior design and integrated product design.
-          </p>
-
-          <h2 class="doc-section">Information for International Applicants</h2>
-
-          <p class="doc-p">
-            Across the three Schools, <span class="hl" data-ref="P4">a total of 49 Master of Science programmes are offered</span>, of which <span class="hl" data-ref="P5">33 are taught entirely in English</span> and open to applicants from outside the European Union. The standard application window for non-EU candidates runs annually from November to March.
-          </p>
-
-          <p class="doc-p">
-            Candidates are expected to hold a Bachelor's degree (or equivalent) of at least three years of full-time study, achieved with strong academic standing. Specific language requirements and prerequisite coursework vary by programme.
-          </p>
-
-          <p class="doc-p" style="margin-top: 24px; color: var(--ink-dim); font-size: 13px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-            ─── 试试在英文上划选一段 ───
-          </p>
         </div>
       </div>
     </div>
@@ -1419,55 +1480,151 @@
   let profileAnswers = {};
   let savedProfile = null;
   let mockUser = null;
+  let aiEnabled = false;
+  let aiProvider = '';
+  let aiModel = '';
+  let availableModels = [];
+  let currentOfficialDoc = null;
   const profileSteps = [
     {
       key: '学校',
-      question: '先说说你的学校背景吧。你现在是在读还是已经毕业？学校大概是什么类型？',
+      question: '我们先从你的学校背景聊起吧。你现在是在读还是已经毕业？大概是什么类型的学校？不确定怎么说也没关系，随便描述一下就行。',
       placeholder: '例如：双非一本，大三在读 / 国际高中 12 年级',
       chips: ['985/211 本科', '双非本科', '国际高中', '已经毕业']
     },
     {
       key: '专业',
-      question: '你现在的专业或学习方向是什么？如果想跨专业，也可以一起说。',
+      question: '你现在学的是什么方向？如果你其实想换专业，也可以直接告诉我，我们一起看看难度和机会。',
       placeholder: '例如：本科金融，想申请商业分析 / 本科土木，想转建筑管理',
       chips: ['计算机相关', '商科', '艺术设计', '想跨专业']
     },
     {
       key: '成绩',
-      question: '你的成绩大概是什么水平？本科可以说 GPA/均分，高中可以说高考或平时成绩。',
+      question: '成绩这块大概是什么情况？不用特别精确，GPA、均分、高考成绩，或者你觉得自己大概在哪个水平都可以。',
       placeholder: '例如：GPA 3.4/4.0，均分 86；高考 620',
       chips: ['GPA 3.5+', '均分 85+', '高考 600+', '成绩还没整理']
     },
     {
       key: '语言',
-      question: '语言成绩目前怎么样？雅思、托福、多邻国，或者还没考都可以。',
+      question: '语言成绩准备到哪一步了？雅思、托福、多邻国，或者还没开始准备，都可以说。',
       placeholder: '例如：雅思 6.5，小分 6；托福 95；还没考',
       chips: ['雅思 6.5+', '托福 90+', '还没考', '准备刷分']
     },
     {
       key: '目标国家',
-      question: '你更想去哪些国家或地区？如果还没定，我也可以帮你比较。',
+      question: '你心里有没有比较想去的国家或地区？如果还没定，也可以说“还没想好”，我后面可以帮你一起比较。',
       placeholder: '例如：英国优先，也考虑澳洲和意大利',
       chips: ['英国', '澳洲', '意大利', '还没定']
     },
     {
       key: '预算',
-      question: '预算大概是多少？可以说总预算，也可以说一年能接受多少。',
+      question: '预算方面你大概怎么考虑？可以说总预算，也可以说一年最多能接受多少；不方便说也可以跳过。',
       placeholder: '例如：总预算 60 万以内 / 一年 30 万以内',
       chips: ['一年 30 万内', '总预算 50 万内', '预算比较灵活', '想尽量省钱']
     },
     {
       key: '动机偏好',
-      question: '最后说说你的申请动机和偏好：想就业、移民、排名、低预算、转专业，哪个最重要？',
+      question: '最后我想了解一下，你为什么想留学？比如更看重就业、排名、移民、预算，还是想换一个专业方向？',
       placeholder: '例如：想转码，偏就业，希望一年制，不想太贵',
       chips: ['偏就业', '看排名', '想移民', '低预算优先']
     }
   ];
+  const officialLinksByCountry = {
+    uk: {
+      label: '英国',
+      links: [
+        { label: 'Imperial College London', desc: 'QS 高排名英国院校 · 研究生课程入口', url: 'https://www.imperial.ac.uk/study/courses/postgraduate-taught/' },
+        { label: 'University of Oxford', desc: 'QS 高排名英国院校 · 研究生课程入口', url: 'https://www.ox.ac.uk/admissions/graduate/courses/courses-a-z-listing' },
+        { label: 'University of Cambridge', desc: 'QS 高排名英国院校 · 研究生课程入口', url: 'https://www.postgraduate.study.cam.ac.uk/courses' },
+        { label: 'UCL', desc: 'QS 高排名英国院校 · 授课型硕士入口', url: 'https://www.ucl.ac.uk/prospective-students/graduate/taught-degrees' },
+        { label: 'University of Edinburgh', desc: 'QS 高排名英国院校 · 研究生项目检索', url: 'https://www.ed.ac.uk/studying/postgraduate/degrees' },
+        { label: 'University of Manchester', desc: 'QS 高排名英国院校 · 硕士课程列表', url: 'https://www.manchester.ac.uk/study/masters/courses/list/' }
+      ]
+    },
+    italy: {
+      label: '意大利',
+      links: [
+        { label: 'Politecnico di Milano', desc: 'QS 高排名意大利院校 · 硕士项目入口', url: 'https://www.polimi.it/en/programmes/master-of-science-programmes' },
+        { label: 'Sapienza University of Rome', desc: 'QS 高排名意大利院校 · 课程检索入口', url: 'https://corsidilaurea.uniroma1.it/en' },
+        { label: 'University of Bologna', desc: 'QS 高排名意大利院校 · 英文项目检索', url: 'https://www.unibo.it/en/teaching/degree-programmes' },
+        { label: 'Politecnico di Torino', desc: 'QS 高排名意大利院校 · 申请学习入口', url: 'https://www.polito.it/en/education/applying-studying-graduating' }
+      ]
+    },
+    australia: {
+      label: '澳洲/澳大利亚',
+      links: [
+        { label: 'University of Melbourne', desc: 'QS 高排名澳洲院校 · 研究生课程入口', url: 'https://study.unimelb.edu.au/find/courses/graduate' },
+        { label: 'UNSW Sydney', desc: 'QS 高排名澳洲院校 · 研究生项目入口', url: 'https://www.unsw.edu.au/study/postgraduate' },
+        { label: 'University of Sydney', desc: 'QS 高排名澳洲院校 · 课程检索入口', url: 'https://www.sydney.edu.au/courses/search.html' },
+        { label: 'Australian National University', desc: 'QS 高排名澳洲院校 · 课程检索入口', url: 'https://programsandcourses.anu.edu.au/' },
+        { label: 'Monash University', desc: 'QS 高排名澳洲院校 · 课程检索入口', url: 'https://www.monash.edu/study/courses/find-a-course' }
+      ]
+    },
+    usa: {
+      label: '美国',
+      links: [
+        { label: 'MIT', desc: 'QS 高排名美国院校 · 研究生招生入口', url: 'https://gradadmissions.mit.edu/programs' },
+        { label: 'Stanford University', desc: 'QS 高排名美国院校 · 研究生招生入口', url: 'https://gradadmissions.stanford.edu/programs' },
+        { label: 'Harvard University', desc: 'QS 高排名美国院校 · 研究生院入口', url: 'https://gsas.harvard.edu/programs' },
+        { label: 'Caltech', desc: 'QS 高排名美国院校 · 研究生学习入口', url: 'https://www.gradoffice.caltech.edu/academics/degree-programs' },
+        { label: 'University of Chicago', desc: 'QS 高排名美国院校 · 研究生项目入口', url: 'https://grad.uchicago.edu/admissions/apply/' }
+      ]
+    },
+    canada: {
+      label: '加拿大',
+      links: [
+        { label: 'University of Toronto', desc: 'QS 高排名加拿大院校 · 研究生项目入口', url: 'https://www.sgs.utoronto.ca/programs/' },
+        { label: 'McGill University', desc: 'QS 高排名加拿大院校 · 研究生项目入口', url: 'https://www.mcgill.ca/gradapplicants/programs' },
+        { label: 'University of British Columbia', desc: 'QS 高排名加拿大院校 · 研究生项目入口', url: 'https://www.grad.ubc.ca/prospective-students/graduate-degree-programs' },
+        { label: 'University of Alberta', desc: 'QS 高排名加拿大院校 · 研究生项目入口', url: 'https://www.ualberta.ca/graduate-studies/programs/index.html' }
+      ]
+    },
+    singapore: {
+      label: '新加坡',
+      links: [
+        { label: 'National University of Singapore', desc: 'QS 高排名新加坡院校 · 研究生课程入口', url: 'https://www.nus.edu.sg/registrar/prospective-students/graduate' },
+        { label: 'Nanyang Technological University', desc: 'QS 高排名新加坡院校 · 研究生招生入口', url: 'https://www.ntu.edu.sg/admissions/graduate' },
+        { label: 'Singapore Management University', desc: '新加坡代表院校 · 研究生课程入口', url: 'https://graduatestudies.smu.edu.sg/' }
+      ]
+    },
+    hongkong: {
+      label: '中国香港',
+      links: [
+        { label: 'The University of Hong Kong', desc: 'QS 高排名香港院校 · 授课型硕士入口', url: 'https://admissions.hku.hk/tpg/' },
+        { label: 'The Chinese University of Hong Kong', desc: 'QS 高排名香港院校 · 研究生课程入口', url: 'https://www.gs.cuhk.edu.hk/admissions/programme' },
+        { label: 'HKUST', desc: 'QS 高排名香港院校 · 研究生项目入口', url: 'https://prog-crs.hkust.edu.hk/pgprog' },
+        { label: 'City University of Hong Kong', desc: 'QS 高排名香港院校 · 授课型硕士入口', url: 'https://www.cityu.edu.hk/pg/taught-postgraduate-programmes' },
+        { label: 'The Hong Kong Polytechnic University', desc: 'QS 高排名香港院校 · 研究生项目入口', url: 'https://www.polyu.edu.hk/study/pg' }
+      ]
+    }
+  };
 
-  initAuth();
+  redirectStaticFileToLocalServer();
+  initAuth().finally(restorePendingOfficialUrl);
   loadTrending();
+  loadModels();
+
+  function getLocalAppUrl() {
+    return 'http://127.0.0.1:5173/C3-prototype.html';
+  }
+
+  function redirectStaticFileToLocalServer() {
+    if (window.location.protocol !== 'file:') return false;
+    authStatus.textContent = '请使用本地服务打开';
+    appAuthStatus.textContent = '本地服务未连接';
+    authButton.textContent = '打开本地服务';
+    authButton.classList.remove('muted');
+    authButton.onclick = () => {
+      window.location.href = getLocalAppUrl();
+    };
+    setTimeout(() => {
+      window.location.href = getLocalAppUrl();
+    }, 700);
+    return true;
+  }
 
   async function initAuth() {
+    if (window.location.protocol === 'file:') return;
     authStatus.classList.add('active');
     appAuthStatus.classList.add('active');
 
@@ -1475,6 +1632,9 @@
       const res = await fetch('/api/config');
       const config = await res.json();
       const key = config.clerkPublishableKey;
+      aiEnabled = Boolean(config.aiEnabled);
+      aiProvider = config.aiProvider || '';
+      aiModel = config.aiModel || '';
 
       if (!key) {
         authRequired = true;
@@ -1505,7 +1665,9 @@
       authStatus.textContent = '登录服务连接失败';
       appAuthStatus.textContent = '登录不可用';
       authButton.textContent = '重试登录';
-      authButton.onclick = initAuth;
+      authButton.onclick = () => {
+        window.location.href = getLocalAppUrl();
+      };
     }
   }
 
@@ -1554,6 +1716,20 @@
       pill.onclick = () => ask(item.url, 'url');
       linkWrap.appendChild(pill);
     });
+  }
+
+  async function loadModels() {
+    try {
+      const res = await fetch('/api/models');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '模型列表加载失败');
+      availableModels = data.models || [];
+    } catch {
+      availableModels = [
+        { id: 'openai/gpt-4o-mini', label: 'ChatGPT 4o Mini', use: '日常问答 / 性价比', promptUsdPer1M: 0.15, completionUsdPer1M: 0.6 },
+        { id: 'openai/gpt-4o', label: 'ChatGPT 4o', use: '复杂申请判断 / 文书讨论', promptUsdPer1M: 2.5, completionUsdPer1M: 10 }
+      ];
+    }
   }
 
   function loadClerkJs(key) {
@@ -1671,24 +1847,39 @@
 
   function renderMockAuthState() {
     savedProfile = mockUser?.profileComplete ? mockUser.profile : null;
+    const isAdmin = mockUser.role === 'admin';
     authButton.style.display = 'none';
-    authStatus.textContent = `${mockUser.email}${mockUser.role === 'admin' ? ' · 管理员' : ''}`;
+    authStatus.textContent = `${mockUser.email}${isAdmin ? ' · 管理员' : ''}`;
     authStatus.onclick = () => openUserCenter();
     authStatus.style.cursor = 'pointer';
-    appAuthStatus.textContent = savedProfile ? '本地账号 · 画像已保存' : '本地账号 · 待补充画像';
+    appAuthStatus.textContent = isAdmin ? '管理员后台' : (savedProfile ? '本地账号 · 画像已保存' : '本地账号 · 待补充画像');
     appAuthStatus.onclick = () => openUserCenter();
     appAuthStatus.style.cursor = 'pointer';
     authUser.classList.add('active');
-    authUser.innerHTML = `<button class="auth-button" type="button" onclick="openUserCenter()">个人中心</button>`;
+    authUser.innerHTML = `<button class="auth-button" type="button" onclick="openUserCenter()">${isAdmin ? '后台' : '个人中心'}</button>`;
   }
 
   function openUserCenter() {
+    if (mockUser?.role === 'admin') {
+      openAdminCenter();
+      return;
+    }
     renderUserCenter();
     document.getElementById('userCenter').classList.add('active');
   }
 
   function closeUserCenter() {
     document.getElementById('userCenter').classList.remove('active');
+  }
+
+  function openAdminCenter() {
+    const frame = document.getElementById('adminFrame');
+    frame.src = `admin.html?modal=1&t=${Date.now()}`;
+    document.getElementById('adminCenter').classList.add('active');
+  }
+
+  function closeAdminCenter() {
+    document.getElementById('adminCenter').classList.remove('active');
   }
 
   function renderUserCenter() {
@@ -1746,20 +1937,39 @@
   }
 
   const heroInput = document.getElementById('heroInput');
+  document.getElementById('heroForm').addEventListener('submit', e => {
+    e.preventDefault();
+    startHeroQuery();
+  });
   heroInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && heroInput.value.trim()) {
-      const v = heroInput.value.trim();
-      const isUrl = /^https?:\/\//i.test(v);
-      ask(v, isUrl ? 'url' : 'q');
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      startHeroQuery();
     }
   });
+  function startHeroQuery() {
+    const raw = heroInput.value.trim();
+    const v = normalizeUrlInput(raw);
+    if (!v) return;
+    const isUrl = isOfficialUrlInput(raw);
+    ask(v, isUrl ? 'url' : 'q');
+  }
+  function showLoginRequired() {
+    const notice = document.getElementById('loginRequired');
+    notice.classList.add('active');
+    authButton.textContent = '请先登录/注册';
+    setTimeout(() => notice.classList.remove('active'), 5000);
+  }
   document.getElementById('profileChatInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitProfileAnswer();
   });
 
   function ask(input, kind) {
-    if (authRequired && (!window.Clerk || !window.Clerk.user)) {
+    const profileUpdate = kind === 'q' ? updateProfileFromChat(input) : null;
+    const hasSignedInUser = Boolean(window.Clerk?.user || mockUser);
+    if (authRequired && !hasSignedInUser) {
       pendingAsk = { input, kind };
+      showLoginRequired();
       startSignIn();
       return;
     }
@@ -1770,6 +1980,7 @@
       app.classList.add('active');
       pendingScenario = { input, kind };
       maybeShowProfileGuide();
+      setTimeout(() => maybeNotifyProfileUpdate(profileUpdate), 900);
     }, 280);
   }
 
@@ -1798,7 +2009,7 @@
     profileStepIndex = 0;
     profileAnswers = {};
     document.getElementById('profileChatBody').innerHTML = '';
-    addProfileBotMessage('我会先像顾问一样快速了解你的情况。你不需要一次性填表，我问一句你答一句；不会的就跳过。');
+    addProfileBotMessage('我们先简单聊一下你的情况。你有什么不确定、还没想清楚的地方都可以直接说；不知道怎么答也没关系，可以跳过。我不是来考你的，只是想更好地帮你判断申请方向。');
     askProfileStep();
   }
 
@@ -1854,6 +2065,9 @@
   }
 
   function getStoredProfile() {
+    if (savedProfile && Object.keys(savedProfile).length) {
+      return savedProfile;
+    }
     if (window.Clerk?.user?.unsafeMetadata?.izanofferProfileComplete && window.Clerk.user.unsafeMetadata.izanofferProfile) {
       return window.Clerk.user.unsafeMetadata.izanofferProfile;
     }
@@ -1908,6 +2122,39 @@
     if (!authRequired) appAuthStatus.textContent = '演示模式 · 画像已本地保存';
   }
 
+  function updateProfileFromChat(text) {
+    const country = detectTargetCountry(text);
+    if (!country) return null;
+    const profile = { ...(getStoredProfile() || {}) };
+    const previous = profile['目标国家'];
+    if (previous && detectTargetCountry(previous)?.key === country.key) return null;
+    profile['目标国家'] = country.label;
+    savedProfile = profile;
+    if (mockUser) {
+      mockUser = {
+        ...mockUser,
+        profile,
+        profileComplete: true
+      };
+      localStorage.setItem('izanofferMockUser', JSON.stringify(mockUser));
+    }
+    localStorage.setItem('izanofferProfile', JSON.stringify(profile));
+    localStorage.setItem('izanofferProfileComplete', 'true');
+    saveProfileToAccount(profile);
+    if (!currentOfficialDoc && document.getElementById('app').classList.contains('active')) {
+      renderEmptyReader();
+    }
+    return { previous, current: country.label };
+  }
+
+  function maybeNotifyProfileUpdate(update) {
+    if (!update) return;
+    addAiMsg(`
+      <div class="skill-chip">学生画像 · 已更新</div>
+      我把你的目标国家更新为 <b>${escapeHtml(update.current)}</b>。左侧会优先显示这个国家 QS 排名内的学校官网；如果你想查没显示的学校，直接在右侧输入学校名或官网 URL 就行。
+    `);
+  }
+
   function addProfileBotMessage(text, chips = []) {
     const body = document.getElementById('profileChatBody');
     const div = document.createElement('div');
@@ -1958,13 +2205,12 @@
       document.getElementById('chatMsgs').innerHTML = '';
       document.getElementById('suggests').innerHTML = '';
       pendingScenario = null;
+      renderEmptyReader();
     }, 300);
   }
 
-  // 保存原始米兰理工内容，方便用户切回
-  const ORIGINAL_POLIMI_HTML = document.getElementById('docContent').innerHTML;
   // 记录左边当前显示的"真实 URL"，给"↗ 在原网站打开"按钮用
-  let currentUrl = 'https://www.polimi.it/en/programmes/master';
+  let currentUrl = '';
 
   // 让"↗ 在原网站打开"按钮真的可点击
   document.getElementById('viewerOpen').addEventListener('click', () => {
@@ -1986,75 +2232,219 @@
     return main.substring(0, 2).toUpperCase();
   }
 
-  function renderFromUrl(url) {
-    // 0) 记录当前 URL，让"↗ 在原网站打开"按钮能跳到这里
-    currentUrl = url;
-    // 1) 更新 URL 栏
-    document.getElementById('viewerUrl').textContent = getUrlPath(url);
+  function isOfficialUrlInput(value) {
+    const raw = (value || '').trim();
+    return /^https?:\/\//i.test(raw) || /^www\./i.test(raw) || /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/.*)?$/i.test(raw);
+  }
 
-    // 2) 如果是已知学校（polimi），还原原始内容；否则渲染通用占位
-    const domain = getDomain(url).toLowerCase();
-    const doc = document.getElementById('docContent');
+  function normalizeUrlInput(value) {
+    const raw = (value || '').trim();
+    if (!raw) return '';
+    if (/^https?:\/\//i.test(raw)) return raw;
+    if (isOfficialUrlInput(raw)) return `https://${raw}`;
+    return raw;
+  }
 
-    if (domain.includes('polimi')) {
-      doc.innerHTML = ORIGINAL_POLIMI_HTML;
-      return 'known-polimi';
+  function restorePendingOfficialUrl() {
+    if (window.location.protocol === 'file:') return;
+    try {
+      const pendingUrl = localStorage.getItem('izanofferPendingOfficialUrl');
+      if (!pendingUrl) return;
+      localStorage.removeItem('izanofferPendingOfficialUrl');
+      setTimeout(() => ask(pendingUrl, 'url'), 350);
+    } catch {
+      // localStorage may be unavailable in some browser privacy modes.
     }
+  }
 
-    // 通用占位：先 loading，再"抓取完成"
-    doc.innerHTML = `
+  function redirectFilePageToLocalServer(url) {
+    if (window.location.protocol !== 'file:') return false;
+    try {
+      localStorage.setItem('izanofferPendingOfficialUrl', url);
+    } catch {
+      // Ignore; redirect still helps the user reach the working server page.
+    }
+    const localUrl = getLocalAppUrl();
+    addAiMsg(`
+      <div class="skill-chip">切换到本地服务</div>
+      可以抓取官网，但当前是 <b>file://</b> 静态打开，浏览器没有连接后端抓取接口。<br><br>
+      我正在切到 <b>${localUrl}</b>，切过去后会继续抓取：${escapeHtml(url)}
+    `);
+    setTimeout(() => {
+      window.location.href = localUrl;
+    }, 900);
+    return true;
+  }
+
+  function renderEmptyReader() {
+    currentUrl = '';
+    currentOfficialDoc = null;
+    const recommended = getRecommendedOfficialLinks();
+    const title = recommended
+      ? `${recommended.label} QS 排名学校官网`
+      : '选择一个官网开始';
+    const copy = recommended
+      ? '这里先显示目标国家里 QS 排名靠前的代表院校。没有显示的学校，可以直接在右侧聊天框输入学校名、专业名或官网 URL。'
+      : '左侧内容会根据你粘贴或选择的官网实时更新，不再固定显示示例学校。';
+    const cards = recommended ? `
+      <div class="official-grid">
+        ${recommended.links.map(link => `
+          <button class="official-card" type="button" onclick="openRecommendedOfficial('${escapeHtml(link.url)}')">
+            <b>${escapeHtml(link.label)}</b>
+            <span>${escapeHtml(link.desc)}</span>
+          </button>
+        `).join('')}
+      </div>
+    ` : '';
+    document.getElementById('viewerUrl').textContent = '等待选择官网 URL';
+    document.getElementById('docContent').innerHTML = `
+      <div class="source-note">
+        <b>等待选择官网</b>
+        <div>点击下方 QS 排名学校官网，或在右侧聊天框输入其他学校/专业官网 URL。这里会显示抓取到的官网正文、中文释义和引用编号。</div>
+        <div class="source-note-row">
+          <span>${recommended ? `目标国家：${escapeHtml(recommended.label)}` : '未选择官网'}</span>
+          ${recommended ? '<span>QS 排名代表院校</span>' : ''}
+          <span>保留原文</span>
+          <span>中英双语</span>
+          <span>可打开原网页核对</span>
+        </div>
+      </div>
+
+      <div class="official-picker">
+        <div class="official-picker-head">
+          <h2>${escapeHtml(title)}</h2>
+          <p>${escapeHtml(copy)}</p>
+        </div>
+        ${cards}
+      </div>
+    `;
+  }
+
+  function getRecommendedOfficialLinks() {
+    const profile = getStoredProfile();
+    const target = profile?.['目标国家'] || '';
+    const country = detectTargetCountry(target);
+    if (!country) return null;
+    return officialLinksByCountry[country.key] || null;
+  }
+
+  function openRecommendedOfficial(url) {
+    addUserMsg('打开官网：' + url);
+    const pageCountry = detectPageCountry({ url, blocks: [], title: '' });
+    if (pageCountry) {
+      const profile = { ...(getStoredProfile() || {}) };
+      const previous = profile['目标国家'];
+      if (!previous || detectTargetCountry(previous)?.key !== pageCountry.key) {
+        profile['目标国家'] = pageCountry.label;
+        saveProfileToAccount(profile);
+        savedProfile = profile;
+      }
+    }
+    addAiMsg(`
+      <div class="skill-chip">官网入口</div>
+      好，我先帮你抓取这个学校官网页面。左侧会显示官网原文和中文释义，后面我会基于这些内容回答。
+    `);
+    fetchOfficialUrl(url);
+  }
+
+  function showReaderLoading(url) {
+    currentUrl = url;
+    document.getElementById('viewerUrl').textContent = getUrlPath(url);
+    document.getElementById('docContent').innerHTML = `
       <div style="text-align: center; padding: 60px 20px;">
         <div style="display: inline-block; width: 32px; height: 32px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin-bottom: 16px;"></div>
-        <div style="color: var(--ink-soft); font-size: 14px;">正在抓取 <b>${getDomain(url)}</b> ...</div>
-        <div style="color: var(--ink-dim); font-size: 11px; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">headless browser · reader mode · 翻译就绪</div>
+        <div style="color: var(--ink-soft); font-size: 14px;">正在抓取 <b>${escapeHtml(getDomain(url))}</b> ...</div>
+        <div style="color: var(--ink-dim); font-size: 11px; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">reader mode · 原文提取 · 中文释义</div>
       </div>
       <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
     `;
+  }
 
-    setTimeout(() => {
-      doc.innerHTML = `
-        <div class="page-header">
-          <div class="page-crest">${getCrestText(domain)}</div>
-          <div>
-            <div class="page-school">${getDomain(url)}</div>
-            <div class="page-dept">通过 URL 粘贴抓取 · ${new Date().toLocaleDateString()}</div>
+  function renderOfficialDoc(data) {
+    const domain = getDomain(data.url || currentUrl);
+    const blocks = (data.blocks || []).filter(block => block.text).slice(0, 24);
+    currentOfficialDoc = { ...data, blocks };
+    currentUrl = data.url || currentUrl;
+    document.getElementById('viewerUrl').textContent = getUrlPath(currentUrl);
+
+    const htmlBlocks = blocks.map((block, index) => {
+      const ref = `P${index + 1}`;
+      if (/^h[1-3]$/i.test(block.tag)) {
+        return `<h2 class="doc-section"><span class="hl" data-ref="${ref}">${escapeHtml(block.text)}</span></h2>`;
+      }
+      return `
+        <p class="doc-p">
+          <span class="hl" data-ref="${ref}">${escapeHtml(block.text)}</span>
+        </p>
+        <div class="zh-translation">
+          这段官网原文提到：${escapeHtml(block.text.slice(0, 180))}${block.text.length > 180 ? '...' : ''}
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('docContent').innerHTML = `
+      <div class="source-note">
+        <b>官网内容阅读器</b>
+        <div>这里显示从你选择的官网提取的正文，并在每段下方给出中文释义。右侧 AI 回答时会用 P1、P2 这类引用标回来源。</div>
+        <div class="source-note-row">
+          <span>来源：${escapeHtml(domain)}</span>
+          <span>已提取 ${blocks.length} 段</span>
+          <span>中英双语</span>
+          <span>可打开原网页核对</span>
+        </div>
+      </div>
+
+      <div class="page-header">
+        <div class="page-crest">${getCrestText(domain)}</div>
+        <div>
+          <div class="page-school">${escapeHtml(domain)}</div>
+          <div class="page-dept">${escapeHtml(data.path || '/')}</div>
+        </div>
+      </div>
+
+      <h1 class="doc-title">${escapeHtml(data.title || domain)}</h1>
+      ${htmlBlocks || '<p class="doc-p">这个页面暂时没有提取到足够正文。你可以点击“在原网站打开”核对，或者换一个更具体的专业/申请要求页面。</p>'}
+      <p class="doc-p" style="margin-top: 24px; color: var(--ink-dim); font-size: 13px; text-align: center; font-family: 'JetBrains Mono', monospace;">
+        ─── 试试在英文上划选一段 ───
+      </p>
+    `;
+  }
+
+  async function fetchOfficialUrl(url) {
+    if (redirectFilePageToLocalServer(url)) return;
+    showReaderLoading(url);
+    try {
+      const res = await fetch('/api/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '官网抓取失败');
+      renderOfficialDoc(data);
+      onboardUrlSummary(data);
+      if (aiEnabled) {
+        setTimeout(() => askRealAi('请基于当前官网页面，先给我一份面向中国学生的申请要点总结，并结合我的学生画像指出匹配点、风险和下一步。'), 500);
+      }
+    } catch (error) {
+      document.getElementById('docContent').innerHTML = `
+        <div class="source-note">
+          <b>官网抓取失败</b>
+          <div>这个链接暂时没有成功解析。可能是官网屏蔽抓取、页面需要浏览器渲染，或者当前是 file:// 打开导致 API 不可用。</div>
+          <div class="source-note-row">
+            <span>来源：${escapeHtml(getDomain(url))}</span>
+            <span>建议使用本地服务打开</span>
+            <span>可换专业详情页</span>
           </div>
         </div>
-
-        <div style="background: rgba(178,84,56,0.06); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 28px; font-size: 13px; color: var(--ink-soft); line-height: 1.7;">
-          <b>Demo 模式说明</b><br>
-          这是原型演示。真实产品上线后，后端会用 headless browser 真实抓取这个 URL 的页面内容（Reader 模式 · 可翻译 · 可划词解读）。<br><br>
-          现在你看到的是模拟界面，证明<b>"粘贴 URL → 左侧呈现 → AI 解读"</b>的完整 UX 流程可用。划词解读、引用高亮等所有交互都能继续在这里测试。
-        </div>
-
-        <h1 class="doc-title">Page Title / Section Heading</h1>
-
-        <p class="doc-p">
-          This is a placeholder representation of the page content that would be fetched from <b>${getDomain(url)}</b>. In production, our backend will retrieve the actual page text and render it here in a clean reader-friendly view, preserving headings, paragraphs, lists and key data points.
-        </p>
-
-        <h2 class="doc-section">Section · Key Information</h2>
-
-        <p class="doc-p">
-          For demonstration purposes, the AI on the right has been primed with a generic interpretation of an academic / institutional page. You can still test all C3 interactions: <b>select any English text</b> below to trigger the floating "让 AI 解读这段" button, or click citation chips in the chat to highlight content here.
-        </p>
-
-        <p class="doc-p">
-          Real production flow:<br>
-          <b>1.</b> User pastes URL → frontend detects http(s):// prefix<br>
-          <b>2.</b> Backend fetches with Puppeteer / Playwright (handles JS rendering)<br>
-          <b>3.</b> Reader-mode extraction (removes nav, ads, footer)<br>
-          <b>4.</b> Render to this left panel + send full text to AI for analysis<br>
-          <b>5.</b> AI provides translation, summary, and student-context interpretation in the right chat
-        </p>
-
-        <p class="doc-p" style="margin-top: 24px; color: var(--ink-dim); font-size: 13px; text-align: center; font-family: 'JetBrains Mono', monospace;">
-          ─── 试试在英文上划选一段 ───
-        </p>
+        <p class="doc-p">${escapeHtml(error.message)}</p>
       `;
-    }, 1100);
-
-    return 'generic';
+      addAiMsg(`
+        <div class="skill-chip">官网抓取失败</div>
+        这个链接没有成功解析：${escapeHtml(error.message)}<br><br>
+        你可以换一个更具体的专业页面，或者确认现在是用 <b>http://127.0.0.1:5173/C3-prototype.html</b> 打开的；如果是 file://，真实抓取接口不能工作。
+      `);
+    }
   }
 
   function runScenario(input, kind) {
@@ -2062,11 +2452,6 @@
     document.getElementById('sessionTitle').textContent = kind === 'url' ? input : input;
 
     if (kind === 'url') {
-      // 1) 立刻把 URL 渲染到左边（loading → 内容）
-      const renderKind = renderFromUrl(input);
-      const domain = getDomain(input);
-
-      // 2) 右边对话：用户消息 + AI "正在打开"
       addUserMsg('帮我看下：' + input);
       setTimeout(() => {
         addAiMsg(`
@@ -2074,16 +2459,11 @@
           收到 · 正在打开 <span class="mono" style="font-size: 11px; color: var(--ink-soft);">${getUrlPath(input)}</span> 并帮你读完...
         `);
       }, 400);
-
-      // 3) 抓取完成后给摘要
-      if (renderKind === 'known-polimi') {
-        setTimeout(() => onboardSummary(), 1600);
-      } else {
-        setTimeout(() => onboardGenericUrl(input), 1800);
-      }
+      fetchOfficialUrl(input);
     } else {
+      renderEmptyReader();
       addUserMsg(input);
-      setTimeout(() => onboardSummary(), 700);
+      setTimeout(() => askRealAi(input), 500);
     }
 
     setTimeout(() => setSuggests([
@@ -2093,42 +2473,95 @@
     ]), 2400);
   }
 
-  function onboardGenericUrl(url) {
-    const domain = getDomain(url);
+  function onboardUrlSummary(data) {
+    const domain = getDomain(data.url || currentUrl);
+    const blocks = data.blocks || [];
+    const firstRef = blocks.find(block => block.text);
+    const countryWarning = getCountryMismatchWarning(data);
     addAiMsg(`
       <div class="skill-chip">官网解读 · 主动总结</div>
-      已经把 <b>${domain}</b> 这一页读完了。<br><br>
-      在<b>真实产品</b>里，这条消息会变成：基于抓取到的页面真实内容，给出一份针对中国学生的中文摘要 + 重点 + 行动建议（类似你试米兰理工那个 pill 时看到的效果）。<br><br>
-      <b>现在你可以测试这些交互：</b><br>
-      • 左边划选任意英文段落 → 浮出"让 AI 解读这段"按钮<br>
-      • 点击底部建议追问<br>
-      • 在下方输入框继续提问 / 粘贴新 URL
-      <div class="source-tag">来源 ${domain} · Demo 模拟抓取</div>
+      已经根据你选择的官网 <b>${escapeHtml(domain)}</b> 更新左侧正文。<br><br>
+      ${countryWarning}
+      我目前提取到了 <b>${blocks.length} 段</b>官网内容，标题是：<b>${escapeHtml(data.title || domain)}</b>。${firstRef ? `你可以先从 <span class="cite" onclick="flashHl('P1')">P1</span> 看这页的核心说明。` : ''}<br><br>
+      下一步你可以问我：申请要求是什么、对中国学生意味着什么、材料清单有哪些，或者直接在左边划词让我解释。
+      <div class="source-tag">来源 ${escapeHtml(domain)} · 实时抓取</div>
     `);
+  }
+
+  function getCountryMismatchWarning(data) {
+    const profile = getStoredProfile();
+    const target = profile?.['目标国家'] || '';
+    if (!target) return '';
+
+    const pageCountry = detectPageCountry(data);
+    const targetCountry = detectTargetCountry(target);
+    if (!pageCountry || !targetCountry || pageCountry.key === targetCountry.key) return '';
+
+    return `
+      <div class="answer-section" style="margin: 0 0 14px;">
+        <div class="answer-label">先提醒你一下</div>
+        你之前说的目标国家是 <b>${escapeHtml(target)}</b>，但当前打开的官网看起来是 <b>${escapeHtml(pageCountry.label)}</b> 方向。<br>
+        这不一定错，可能你是在顺手比较不同国家；但如果你现在主要想申 <b>${escapeHtml(targetCountry.label)}</b>，这个页面可能不是最匹配的申请依据。建议换成目标国家的学校官网，或者告诉我你是想做跨国家对比。
+      </div>
+    `;
+  }
+
+  function detectTargetCountry(text) {
+    const value = String(text || '').toLowerCase();
+    const rules = [
+      { key: 'uk', label: '英国', patterns: ['英国', '英國', 'uk', 'u.k.', 'united kingdom', 'england', '伦敦', 'london'] },
+      { key: 'italy', label: '意大利', patterns: ['意大利', 'italy', 'italia', '米兰', 'milan', 'milano'] },
+      { key: 'australia', label: '澳洲/澳大利亚', patterns: ['澳洲', '澳大利亚', 'australia', '悉尼', 'sydney', 'melbourne'] },
+      { key: 'usa', label: '美国', patterns: ['美国', '美國', 'usa', 'u.s.', 'united states', 'america'] },
+      { key: 'canada', label: '加拿大', patterns: ['加拿大', 'canada'] },
+      { key: 'singapore', label: '新加坡', patterns: ['新加坡', 'singapore'] },
+      { key: 'hongkong', label: '中国香港', patterns: ['香港', 'hong kong', 'hk'] }
+    ];
+    return rules.find(rule => rule.patterns.some(pattern => value.includes(pattern)));
+  }
+
+  function detectPageCountry(data) {
+    const url = String(data.url || currentUrl || '').toLowerCase();
+    const host = getDomain(data.url || currentUrl).toLowerCase();
+    const haystack = [
+      url,
+      host,
+      data.title || '',
+      ...(data.blocks || []).slice(0, 8).map(block => block.text || '')
+    ].join(' ').toLowerCase();
+
+    if (host.endsWith('.uk') || haystack.includes('university college london') || haystack.includes('ucl')) return { key: 'uk', label: '英国' };
+    if (host.endsWith('.it') || haystack.includes('politecnico di milano') || haystack.includes('milano') || haystack.includes('italy')) return { key: 'italy', label: '意大利' };
+    if (host.endsWith('.au') || haystack.includes('australia')) return { key: 'australia', label: '澳洲/澳大利亚' };
+    if (host.endsWith('.edu') || host.endsWith('.us') || haystack.includes('united states')) return { key: 'usa', label: '美国' };
+    if (host.endsWith('.ca') || haystack.includes('canada')) return { key: 'canada', label: '加拿大' };
+    if (host.endsWith('.sg') || haystack.includes('singapore')) return { key: 'singapore', label: '新加坡' };
+    if (host.endsWith('.hk') || haystack.includes('hong kong')) return { key: 'hongkong', label: '中国香港' };
+    return null;
   }
 
   function onboardSummary() {
     addAiMsg(`
-      <div class="skill-chip">AI 留学顾问 · 基于官网</div>
+      <div class="skill-chip">AI 留学顾问 · 先确认方向</div>
       <div class="answer-block">
         <div class="answer-section">
           <div class="answer-label">结论</div>
-          <b>这是一页米兰理工硕士项目总览。</b>如果你想 DIY 申请，先用它判断项目数量、授课语言和基础门槛，再进入具体专业页面核对详细要求。
+          这个问题可以先聊，但如果要判断某个项目能不能申，最好再粘贴一个学校或专业官网 URL。我会把官网正文放在左边，再基于原文逐项判断。
         </div>
         <div class="answer-section">
-          <div class="answer-label">官网依据</div>
-          官网写明硕士项目通常为 <b>2 年 / 120 ECTS</b><span class="cite" onclick="flashHl('P1')">P1</span>。三个学院共 <b>49 个硕士项目</b><span class="cite" onclick="flashHl('P4')">P4</span>，其中 <b>33 个全英文授课</b><span class="cite" onclick="flashHl('P5')">P5</span>。
+          <div class="answer-label">我需要的依据</div>
+          官网的 entry requirements、application deadlines、documents、fees、language requirements 这几类页面最有价值。你粘贴 URL 后，左侧会显示对应原文和引用编号。
         </div>
         <div class="answer-section">
           <div class="answer-label">对你的影响</div>
-          如果你不会意大利语，可以优先筛选全英文项目；但具体专业还要继续核对语言成绩、先修课、作品集或课程匹配要求。
+          我会结合你的学生画像，比如学校、成绩、语言、预算和目标专业，告诉你哪里稳、哪里有风险、还缺哪些材料。
         </div>
         <div class="answer-section">
           <div class="answer-label">下一步</div>
           <div class="checklist">
-            <div class="check-item">选择 3-5 个目标专业，逐个打开专业详情页。</div>
-            <div class="check-item">核对每个专业的语言、GPA、课程背景和材料要求。</div>
-            <div class="check-item">把你的本科背景、GPA、语言成绩填进背景卡，让我帮你判断匹配度。</div>
+            <div class="check-item">粘贴一个目标项目官网 URL。</div>
+            <div class="check-item">我会抓取左侧原文，并把重点翻译成中文。</div>
+            <div class="check-item">你继续追问申请要求、材料清单、截止日期或匹配度。</div>
           </div>
         </div>
       </div>
@@ -2136,7 +2569,7 @@
         <b>建议补充背景</b>
         <div>本科院校 / 专业 / GPA / 语言成绩 / 目标国家 / 想申专业方向</div>
       </div>
-      <div class="source-tag">来源 polimi.it · 抓取于今日</div>
+      <div class="source-tag">等待官网 URL · 可实时抓取</div>
     `);
   }
 
@@ -2213,7 +2646,7 @@
       return `这段是<b>学位门槛</b>：3 年以上本科 + 学业良好。<br>对中国学生：211/985 通常视为良好，双非要 GPA 80+ 才稳。建议你把本科平均分换算成 GPA 4.0 制，意大利学校会用这个 reference。`;
     }
     if (/application|deadline|November|March/i.test(text)) {
-      return `这段是<b>申请时间窗口</b>：每年 11 月到次年 3 月。<br>对你来说：现在 6 月，建议 9 月前确定选校 + 准备材料，10 月开放第一时间申请最稳。米兰理工是 rolling admission 倾向，越早越好。`;
+      return `这段是在说<b>申请时间窗口或截止日期</b>。<br>对你来说：不要只看一个大概月份，最好继续核对具体专业页面的 deadline、round 和材料提交时间，我会优先按官网原文帮你标出来。`;
     }
     return `这段我帮你翻译 ——<br><br>"${text.substring(0, 100)}..." 大意是关于学校项目设置 / 申请条件 / 国际生信息的内容。<br>对你具体怎么用，再追问一句我就告诉你。`;
   }
@@ -2233,6 +2666,66 @@
     div.className = 'msg';
     div.innerHTML = `<div class="msg-av ai">留</div><div class="msg-content"><div class="msg-bub">${html}</div></div>`;
     msgs.appendChild(div);
+    scrollChat();
+    return div.querySelector('.msg-bub');
+  }
+
+  function formatAiAnswer(text) {
+    return escapeHtml(text || '')
+      .replace(/\n{2,}/g, '<br><br>')
+      .replace(/\n/g, '<br>')
+      .replace(/\b(P\d+)\b/g, '<span class="cite" onclick="flashHl(\'$1\')">$1</span>');
+  }
+
+  async function askRealAi(question) {
+    const bubble = addAiMsg(`
+      <div class="skill-chip">AI 留学顾问 · ${aiEnabled ? '思考中' : '未配置'}</div>
+      ${aiEnabled ? '我正在结合左侧官网原文和你的学生画像回答...' : '当前还没有配置 OPENROUTER_API_KEY / OPENAI_API_KEY，所以只能显示原型提示。'}
+    `);
+    if (!aiEnabled) {
+      bubble.innerHTML = `
+        <div class="skill-chip">AI 未接入</div>
+        现在后端还没有配置 <b>OPENROUTER_API_KEY</b> 或 <b>OPENAI_API_KEY</b>，所以我不能调用真实模型。配置后，这里会基于左侧官网正文、P1/P2 引用和你的学生画像来回答。<br><br>
+        你可以先继续测试官网抓取、登录和画像流程。
+      `;
+      return;
+    }
+    try {
+      const res = await fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          profile: getStoredProfile() || {},
+          document: currentOfficialDoc || null,
+          model: aiModel,
+          userEmail: mockUser?.email || window.Clerk?.user?.primaryEmailAddress?.emailAddress || ''
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'AI 请求失败');
+      if (data.user) {
+        mockUser = data.user;
+        localStorage.setItem('izanofferMockUser', JSON.stringify(mockUser));
+        renderMockAuthState();
+      }
+      const billing = data.billing ? `
+        <div class="source-tag">
+          本次 ¥${formatMoney(data.billing.chargedCny)} · ${Number(data.billing.totalTokens || 0).toLocaleString()} tokens · 余额 ¥${formatMoney(mockUser?.balanceCny ?? 0)}
+        </div>
+      ` : '';
+      bubble.innerHTML = `
+        <div class="skill-chip">AI 留学顾问 · ${escapeHtml(data.provider || aiProvider || 'AI')} / ${escapeHtml(data.model || aiModel || '已接入')}</div>
+        ${formatAiAnswer(data.answer)}
+        ${billing}
+      `;
+    } catch (error) {
+      bubble.innerHTML = `
+        <div class="skill-chip">AI 请求失败</div>
+        ${escapeHtml(error.message)}<br><br>
+        请检查本地服务是否用 <b>OPENROUTER_API_KEY</b> 启动，OpenRouter 账户是否有 credits，或者 API Key/网络是否可用。
+      `;
+    }
     scrollChat();
   }
   function flashHl(ref) {
@@ -2255,15 +2748,15 @@
       div.onclick = () => {
         wrap.innerHTML = '';
         addUserMsg(txt);
+        const profileUpdate = updateProfileFromChat(txt);
         // 触发 viewerOpen 的 nudge (示意：AI 建议去原网站)
         if (txt.includes('截止') || txt.includes('申请')) {
           const btn = document.getElementById('viewerOpen');
           btn.classList.add('nudge');
           setTimeout(() => btn.classList.remove('nudge'), 4500);
         }
-        setTimeout(() => {
-          addAiMsg(answerSuggestion(txt));
-        }, 400);
+        maybeNotifyProfileUpdate(profileUpdate);
+        askRealAi(txt);
       };
       wrap.appendChild(div);
     });
@@ -2334,12 +2827,21 @@
   function sendApp() {
     const input = document.getElementById('appInput');
     if (!input.value.trim()) return;
-    const v = input.value.trim();
-    const isUrl = /^https?:\/\//i.test(v);
+    const raw = input.value.trim();
+    const v = normalizeUrlInput(raw);
+    const isUrl = isOfficialUrlInput(raw);
     if (isUrl) {
-      // 同样触发左侧更新 + AI 响应
-      const renderKind = renderFromUrl(v);
       addUserMsg('帮我看下：' + v);
+      const pageCountry = detectPageCountry({ url: v, blocks: [], title: '' });
+      if (pageCountry) {
+        const profile = { ...(getStoredProfile() || {}) };
+        const previous = profile['目标国家'];
+        if (!previous || detectTargetCountry(previous)?.key !== pageCountry.key) {
+          profile['目标国家'] = pageCountry.label;
+          saveProfileToAccount(profile);
+          savedProfile = profile;
+        }
+      }
       input.value = '';
       document.getElementById('sessionTitle').textContent = v;
       setTimeout(() => {
@@ -2348,15 +2850,13 @@
           切到新链接 · <span class="mono" style="font-size: 11px; color: var(--ink-soft);">${getUrlPath(v)}</span> 抓取中...
         `);
       }, 400);
-      if (renderKind === 'known-polimi') {
-        setTimeout(() => onboardSummary(), 1600);
-      } else {
-        setTimeout(() => onboardGenericUrl(v), 1800);
-      }
+      fetchOfficialUrl(v);
     } else {
       addUserMsg(v);
+      const profileUpdate = updateProfileFromChat(v);
       input.value = '';
-      setTimeout(() => addAiMsg('<i style="color: var(--ink-dim);">（Demo 模式 · 真实版本会根据问题继续从左边官网或知识库回答）</i>'), 400);
+      maybeNotifyProfileUpdate(profileUpdate);
+      askRealAi(v);
     }
   }
   document.getElementById('appInput').addEventListener('keydown', e => {
@@ -2368,9 +2868,15 @@
     conv.scrollTop = conv.scrollHeight;
   }
   function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, m => ({
+    return String(s).replace(/[&<>"']/g, m => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[m]));
+  }
+  function formatMoney(value) {
+    const num = Number(value || 0);
+    if (Math.abs(num) >= 100) return num.toFixed(0);
+    if (Math.abs(num) >= 1) return num.toFixed(2);
+    return num.toFixed(4).replace(/0+$/, '').replace(/\.$/, '.00');
   }
 </script>
 

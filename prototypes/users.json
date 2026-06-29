@@ -4,8 +4,129 @@
       "email": "451248901@qq.com",
       "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
       "role": "admin",
-      "profile": {},
-      "profileComplete": false
+      "profile": {
+        "学校": "985/211 本科",
+        "专业": "计算机相关",
+        "成绩": "GPA 3.5+",
+        "语言": "雅思 6.5+",
+        "目标国家": "英国",
+        "预算": "一年 30 万内",
+        "动机偏好": "偏就业"
+      },
+      "profileComplete": true,
+      "balanceCny": 404.3907,
+      "usage": [
+        {
+          "provider": "OpenRouter",
+          "model": "openai/gpt-4o",
+          "promptTokens": 160,
+          "completionTokens": 7,
+          "totalTokens": 167,
+          "providerCostUsd": 0.00047,
+          "markup": 1.35,
+          "chargedCny": 0.01,
+          "createdAt": "2026-06-27T14:53:59Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-27T14:55:27Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 10.0,
+          "createdAt": "2026-06-27T14:55:28Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-27T14:55:40Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-27T14:58:24Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-28T06:37:56Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-28T06:37:57Z"
+        },
+        {
+          "provider": "OpenRouter",
+          "model": "openai/gpt-4o",
+          "promptTokens": 228,
+          "completionTokens": 392,
+          "totalTokens": 620,
+          "providerCostUsd": 0.00449,
+          "markup": 1.35,
+          "chargedCny": 0.0439,
+          "createdAt": "2026-06-28T07:20:41Z"
+        },
+        {
+          "provider": "OpenRouter",
+          "model": "openai/gpt-4o",
+          "promptTokens": 229,
+          "completionTokens": 503,
+          "totalTokens": 732,
+          "providerCostUsd": 0.0056025,
+          "markup": 1.35,
+          "chargedCny": 0.0548,
+          "createdAt": "2026-06-28T07:25:12Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 10.0,
+          "createdAt": "2026-06-28T07:27:52Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 30.0,
+          "createdAt": "2026-06-28T07:27:52Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 100.0,
+          "createdAt": "2026-06-28T07:27:53Z"
+        },
+        {
+          "type": "recharge",
+          "amountCny": 100.0,
+          "createdAt": "2026-06-28T07:27:55Z"
+        },
+        {
+          "provider": "OpenRouter",
+          "model": "anthropic/claude-opus-4.8",
+          "promptTokens": 327,
+          "completionTokens": 1001,
+          "totalTokens": 1328,
+          "providerCostUsd": 0.02666,
+          "markup": 1.35,
+          "usdToCny": 6.7981,
+          "exchangeRateSource": "google",
+          "chargedCny": 0.2447,
+          "createdAt": "2026-06-28T08:29:55Z"
+        },
+        {
+          "provider": "OpenRouter",
+          "model": "anthropic/claude-opus-4.8",
+          "promptTokens": 327,
+          "completionTokens": 1050,
+          "totalTokens": 1377,
+          "providerCostUsd": 0.027885,
+          "markup": 1.35,
+          "usdToCny": 6.7981,
+          "exchangeRateSource": "google",
+          "chargedCny": 0.2559,
+          "createdAt": "2026-06-28T08:33:41Z"
+        }
+      ],
+      "displayName": "451248901"
     }
   ]
 }

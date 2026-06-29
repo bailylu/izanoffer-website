@@ -91,6 +91,24 @@ cd prototypes
 python3 server.py 5173
 ```
 
+测试期低成本 AI：
+
+```bash
+cd prototypes
+MINIMAX_API_KEY=你的_minimax_key python3 server.py 5173
+```
+
+当前原型支持 `MINIMAX_API_KEY`、`OPENROUTER_API_KEY`、`OPENAI_API_KEY` 三种启动方式。为了先把本地和线上流程跑通，测试期可以优先使用 MiniMax；正式计费和上线前，需要切回 OpenRouter 上的 Claude Opus 4.8，并重新核对模型价格、余额和扣费策略。
+
+如果只是验证产品流程、不想消耗任何模型额度，可以使用模拟模式：
+
+```bash
+cd prototypes
+AI_MOCK_MODE=1 python3 server.py 5173
+```
+
+`AI_MOCK_MODE=1` 会显示为 `MiniMax Mock`，返回本地模拟回答，不调用外部模型、不扣费。正式上线前必须关闭该模式。
+
 打开：
 
 ```text
